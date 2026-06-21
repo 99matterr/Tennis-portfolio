@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,13 +39,19 @@
             position: relative;
             background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('big4.jpeg');
             background-size: cover;
-            background-position: center;
-            padding: 90px 32px; 
+            
+            /* FIX 1: Anchors the image framing to the top so their faces show */
+            background-position: center top; 
+            
+            /* FIX 2: Increased top padding to push the text down across their gear */
+            padding: 140px 32px 50px 32px; 
+            
             border-radius: 24px; 
             text-align: center; 
             margin-bottom: 40px; 
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            box-sizing: border-box;
         }
         
         .page-header h1 { 
@@ -56,6 +60,7 @@
             letter-spacing: -0.03em; 
             color: #ffffff;
             margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Added subtle depth for text legibility */
         }
 
         /* Upgraded floating card components */
@@ -110,7 +115,7 @@
         /* Responsive scaling guidelines for mobile viewports */
         @media (max-width: 600px) {
             body { padding: 20px 12px; }
-            .page-header { padding: 60px 20px; margin-bottom: 28px; }
+            .page-header { padding: 90px 20px 30px 20px; margin-bottom: 28px; }
             .page-header h1 { font-size: 2.2rem; }
             .blog-card { padding: 24px; }
             .blog-card h2 { font-size: 1.35rem; }
