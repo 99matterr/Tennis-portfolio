@@ -5,35 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tennis Portfolio</title>
     <style>
-    /* Modern Container Configuration */
+    /* Global page layout to center the card on PC screens */
+    body {
+        margin: 0;
+        padding: 0 24px;
+        background-color: #f5f5f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    /* Modern Container Configuration optimized for PC & Mobile */
     .premium-hero-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 80px 24px;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         
-        /* Background configuration with dark overlay */
+        /* Layout spacing for a grand desktop presentation */
+        padding: 140px 40px;
+        min-height: 65vh; 
+        width: 100%;
+        
+        /* Constrains the width on PC so it forms a beautiful centered block */
+        max-width: 1100px; 
+        margin: 40px auto;
+        
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         position: relative;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('image_0.png');
+        
+        /* CHANGED: Updated file name to match your uploaded asset */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('IMG_5243.jpeg');
         background-size: cover;
         background-position: center;
         
-        border-radius: 24px;
-        margin: 24px 0;
+        border-radius: 28px;
         box-sizing: border-box;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
     /* Typography with Deep Contrast */
     .hero-title {
-        font-size: 3.2rem;
+        font-size: 3.8rem;
         font-weight: 700;
         letter-spacing: -0.03em;
         color: #ffffff;
-        margin: 0 0 16px 0;
-        line-height: 1.1;
+        margin: 0 0 20px 0;
+        line-height: 1.15;
     }
 
     /* Premium Metallic Text Gradient */
@@ -44,12 +65,12 @@
     }
 
     .hero-subtitle {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
         color: #e8e8ed;
-        max-width: 540px;
-        margin: 0 0 36px 0;
+        max-width: 600px;
+        margin: 0 0 44px 0;
         font-weight: 400;
-        line-height: 1.45;
+        line-height: 1.5;
         letter-spacing: -0.01em;
     }
 
@@ -67,8 +88,8 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 14px 32px;
-        font-size: 0.95rem;
+        padding: 14px 36px;
+        font-size: 1rem;
         font-weight: 500;
         text-decoration: none !important;
         border-radius: 980px; 
@@ -78,41 +99,48 @@
 
     /* High-Intent Primary Button */
     .primary-btn {
-        background-color: #1d1d1f;
-        color: #ffffff !important;
+        background-color: #ffffff;
+        color: #1d1d1f !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .primary-btn:hover {
         background-color: #0071e3;
+        color: #ffffff !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
+        box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
     }
 
     /* Clean, Minimalist Secondary Button */
     .secondary-btn {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.15);
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .secondary-btn:hover {
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.25);
         transform: translateY(-2px);
     }
 
     /* Flawless Mobile Optimization */
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
+        body {
+            padding: 0 12px;
+        }
         .premium-hero-container {
-            padding: 50px 16px;
-            margin: 12px 0;
+            padding: 80px 20px;
+            min-height: auto;
+            margin: 20px 0;
         }
         .hero-title {
-            font-size: 2.4rem;
+            font-size: 2.6rem;
         }
         .hero-subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 28px;
+            font-size: 1.15rem;
+            margin-bottom: 36px;
         }
         .hero-buttons {
             flex-direction: column;
@@ -134,8 +162,7 @@
         
         <div class="hero-buttons">
             <a class="hero-btn primary-btn" href="https://www.linkedin.com/in/gabriel-vasquez-herrera-8b7b9614a?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_ios" target="_blank" rel="noopener">About Me</a>
-           <a class="hero-btn secondary-btn" href="blog.html">Read Blog</a>
-
+            <a class="hero-btn secondary-btn" href="blog.html">Read Blog</a>
         </div>
     </div>
 
