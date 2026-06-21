@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Portfolio</title>
+    <style>
+    /* Modern Container Configuration */
+    .premium-hero-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 80px 24px;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        
+        /* Background configuration with dark overlay */
+        position: relative;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('image_0.png');
+        background-size: cover;
+        background-position: center;
+        
+        border-radius: 24px;
+        margin: 24px 0;
+        box-sizing: border-box;
+    }
+
+    /* Typography with Deep Contrast */
+    .hero-title {
+        font-size: 3.2rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: #ffffff;
+        margin: 0 0 16px 0;
+        line-height: 1.1;
+    }
+
+    /* Premium Metallic Text Gradient */
+    .hero-title .accent-text {
+        background: linear-gradient(135deg, #0071e3 0%, #00b4d8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #e8e8ed;
+        max-width: 540px;
+        margin: 0 0 36px 0;
+        font-weight: 400;
+        line-height: 1.45;
+        letter-spacing: -0.01em;
+    }
+
+    /* Flexbox Button Layout */
+    .hero-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    /* Premium Pill-Shaped Button Elements */
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 32px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        text-decoration: none !important;
+        border-radius: 980px; 
+        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        letter-spacing: -0.01em;
+    }
+
+    /* High-Intent Primary Button */
+    .primary-btn {
+        background-color: #1d1d1f;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .primary-btn:hover {
+        background-color: #0071e3;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 113, 227, 0.25);
+    }
+
+    /* Clean, Minimalist Secondary Button */
+    .secondary-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .secondary-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* Flawless Mobile Optimization */
+    @media (max-width: 600px) {
+        .premium-hero-container {
+            padding: 50px 16px;
+            margin: 12px 0;
+        }
+        .hero-title {
+            font-size: 2.4rem;
+        }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 28px;
+        }
+        .hero-buttons {
+            flex-direction: column;
+            gap: 12px;
+        }
+        .hero-btn {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 16px 32px;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="premium-hero-container">
+        <h1 class="hero-title">Welcome to my <span class="accent-text">Tennis Portfolio</span></h1>
+        <p class="hero-subtitle">Serving up articles, video breakdowns analysis, and fresh perspectives from across the court.</p>
+        
+        <div class="hero-buttons">
+            <a class="hero-btn primary-btn" href="https://www.linkedin.com/in/gabriel-vasquez-herrera-8b7b9614a?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_ios" target="_blank" rel="noopener">About Me</a>
+            <a class="hero-btn secondary-btn" href="https://nevermindgabo.wordpress.com/blog-posts/">Read Blog</a>
+        </div>
+    </div>
+
+</body>
+</html>
