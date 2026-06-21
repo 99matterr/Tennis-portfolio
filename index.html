@@ -36,8 +36,8 @@
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         position: relative;
         
-        /* CHANGED: Updated file name to match your uploaded asset */
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('IMG_5243.jpeg');
+        /* Background configuration using your uploaded file */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('img_5243.jpeg');
         background-size: cover;
         background-position: center;
         
@@ -68,10 +68,45 @@
         font-size: 1.35rem;
         color: #e8e8ed;
         max-width: 600px;
-        margin: 0 0 44px 0;
+        margin: 0 0 24px 0; /* Slightly reduced to balance the new tag */
         font-weight: 400;
         line-height: 1.5;
         letter-spacing: -0.01em;
+    }
+
+    /* NEW: Animated Under Construction Layout */
+    .construction-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 8px 18px;
+        border-radius: 100px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 44px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .construction-status span {
+        color: #f5f5f7;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+    }
+
+    /* Mini Moving Loader Icon */
+    .loader-dot {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-top-color: #00b4d8; /* Matches your accent color */
+        border-radius: 50%;
+        animation: spin-loader 0.8s linear infinite;
+    }
+
+    @keyframes spin-loader {
+        to { transform: rotate(360deg); }
     }
 
     /* Flexbox Button Layout */
@@ -140,6 +175,9 @@
         }
         .hero-subtitle {
             font-size: 1.15rem;
+            margin-bottom: 20px;
+        }
+        .construction-status {
             margin-bottom: 36px;
         }
         .hero-buttons {
@@ -159,6 +197,12 @@
     <div class="premium-hero-container">
         <h1 class="hero-title">Welcome to my <span class="accent-text">Tennis Portfolio</span></h1>
         <p class="hero-subtitle">Serving up articles, video breakdowns analysis, and fresh perspectives from across the court.</p>
+        
+        <!-- NEW: Under construction badge with live loader -->
+        <div class="construction-status">
+            <div class="loader-dot"></div>
+            <span>Website is still under construction</span>
+        </div>
         
         <div class="hero-buttons">
             <a class="hero-btn primary-btn" href="https://www.linkedin.com/in/gabriel-vasquez-herrera-8b7b9614a?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_ios" target="_blank" rel="noopener">About Me</a>
