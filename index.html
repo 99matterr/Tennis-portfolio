@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tennis Portfolio</title>
+    <title>Gabriel Vasquez | Portfolio</title>
     <style>
     /* Global page layout to center the card on PC screens */
     body {
@@ -36,7 +36,7 @@
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         position: relative;
         
-        /* FIX: Swapped .jpeg to .jpg. Change this extension if your GitHub file uses uppercase letters! */
+        /* Background configuration using your uploaded file */
         background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('IMG_5243.jpeg');
         background-size: cover;
         background-position: center;
@@ -45,6 +45,16 @@
         box-sizing: border-box;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+    }
+
+    /* NEW: Minimalist Name Tag Above Title */
+    .hero-name {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0 0 16px 0;
+        font-weight: 600;
     }
 
     /* Typography with Deep Contrast */
@@ -170,6 +180,10 @@
             min-height: auto;
             margin: 20px 0;
         }
+        .hero-name {
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
         .hero-title {
             font-size: 2.6rem;
         }
@@ -195,6 +209,8 @@
 <body>
 
     <div class="premium-hero-container">
+        <p class="hero-name">Gabriel Vasquez</p>
+        
         <h1 class="hero-title">Welcome to my <span class="accent-text">Tennis Portfolio</span></h1>
         <p class="hero-subtitle">Serving up articles, video breakdowns analysis, and fresh perspectives from across the court.</p>
         
