@@ -1,6 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
+<head><!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Blog | Portfolio</title>
+    <style>
+        /* Global setup matching the premium portfolio tone */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            background-color: #f5f5f7; /* Modern off-white backdrop */
+            color: #1d1d1f;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        
+        /* Clean animation for back navigation link */
+        .back-link { 
+            color: #0071e3; 
+            text-decoration: none; 
+            font-weight: 500; 
+            display: inline-block;
+            margin-bottom: 24px;
+            transition: transform 0.2s ease;
+        }
+        .back-link:hover { 
+            text-decoration: underline;
+            transform: translateX(-4px);
+        }
+
+        /* Premium visual banner header with protective dark image tint */
+        .page-header { 
+            position: relative;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('img_5243.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 90px 32px; 
+            border-radius: 24px; 
+            text-align: center; 
+            margin-bottom: 40px; 
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .page-header h1 { 
+            font-size: 3rem; 
+            font-weight: 700; 
+            letter-spacing: -0.03em; 
+            color: #ffffff;
+            margin: 0;
+        }
+
+        /* Upgraded floating card components */
+        .blog-card {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        /* Interactive physics lift on card hover */
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+        }
+        
+        .blog-card h2 { 
+            font-size: 1.6rem; 
+            margin: 12px 0; 
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+        }
+        
+        .blog-card a { 
+            text-decoration: none; 
+            color: #1d1d1f; 
+            transition: color 0.2s ease; 
+        }
+        
+        /* Smooth color change for title link on hover */
+        .blog-card:hover h2 a { 
+            color: #0071e3; 
+        }
+        
+        .blog-meta { 
+            color: #86868b; 
+            font-size: 0.9rem; 
+            font-weight: 500;
+        }
+        
+        .blog-excerpt { 
+            color: #424245; 
+            font-size: 1.1rem; 
+            margin: 0; 
+            line-height: 1.5;
+        }
+
+        /* Responsive scaling guidelines for mobile viewports */
+        @media (max-width: 600px) {
+            body { padding: 20px 12px; }
+            .page-header { padding: 60px 20px; margin-bottom: 28px; }
+            .page-header h1 { font-size: 2.2rem; }
+            .blog-card { padding: 24px; }
+            .blog-card h2 { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Portfolio</a>
+        
+        <!-- Enhanced header banner container utilizing your stadium photo asset -->
+        <header class="page-header">
+            <h1>Tennis Articles</h1>
+        </header>
+
+        <!-- Article 1 Card -->
+        <article class="blog-card">
+            <header>
+                <div class="blog-meta">June 3, 2026</div>
+                <h2><a href="faster-tennis-balls.html">When Is a Player Ready to Use Faster Tennis Balls?</a></h2>
+            </header>
+            <p class="blog-excerpt">Many players think they should move to faster tennis balls based on age. But the truth is, players should move forward based on skill and comfort, not age...</p>
+        </article>
+
+        <!-- Article 2 Card -->
+        <article class="blog-card">
+            <header>
+                <div class="blog-meta">June 21, 2026</div>
+                <h2><a href="slower-tennis-balls.html">Why Slower Tennis Balls Are Not Just for Kids</a></h2>
+            </header>
+            <p class="blog-excerpt">When people see slower tennis balls—red, orange, or green dot—they often think those balls are only for kids. But this is one of the biggest misconceptions in tennis development...</p>
+        </article>
+
+        <!-- Article 3 Card -->
+        <article class="blog-card">
+            <header>
+                <div class="blog-meta">April 28, 2026</div>
+                <h2><a href="importance-of-repetition.html">The Importance of Repetition in Sports and Learning</a></h2>
+            </header>
+            <p class="blog-excerpt">Repetition is one of the most important elements of improvement, both in sports and in academics. It is through repeating actions that true progress happens...</p>
+        </article>
+    </div>
+</body>
+</html>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tennis Blog | Portfolio</title>
