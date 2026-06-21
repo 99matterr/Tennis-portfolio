@@ -88,4 +88,79 @@
             font-size: 1.6rem; 
             margin: 12px 0; 
             font-weight: 600;
-            letter-spacing: -0.0
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+        }
+        
+        .blog-card a { 
+            text-decoration: none; 
+            color: #1d1d1f; 
+            transition: color 0.2s ease; 
+        }
+        
+        /* Smooth color change for title link on hover */
+        .blog-card:hover h2 a { 
+            color: #0071e3; 
+        }
+        
+        .blog-meta { 
+            color: #86868b; 
+            font-size: 0.9rem; 
+            font-weight: 500;
+        }
+        
+        .blog-excerpt { 
+            color: #424245; 
+            font-size: 1.1rem; 
+            margin: 0; 
+            line-height: 1.5;
+        }
+
+        /* Responsive scaling guidelines for mobile viewports */
+        @media (max-width: 600px) {
+            body { padding: 20px 12px; }
+            .page-header { 
+                min-height: 160px; 
+                padding: 20px; 
+                margin-bottom: 28px; 
+            }
+            .page-header h1 { font-size: 2.2rem; }
+            .blog-card { padding: 24px; }
+            .blog-card h2 { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Portfolio</a>
+        
+        <header class="page-header">
+            <h1>Tennis Articles</h1>
+        </header>
+
+        <article class="blog-card">
+            <header>
+                <div class="blog-meta">June 3, 2026</div>
+                <h2><a href="faster-tennis-balls.html">When Is a Player Ready to Use Faster Tennis Balls?</a></h2>
+            </header>
+            <p class="blog-excerpt">Many players think they should move to faster tennis balls based on age. But the truth is, players should move forward based on skill and comfort, not age...</p>
+        </article>
+
+        <article class="blog-card">
+            <header>
+                <div class="blog-meta">June 21, 2026</div>
+                <h2><a href="slower-tennis-balls.html">Why Slower Tennis Balls Are Not Just for Kids</a></h2>
+            </header>
+            <p class="blog-excerpt">When people see slower tennis balls—red, orange, or green dot—they often think those balls are only for kids. But this is one of the biggest misconceptions in tennis development...</p>
+        </article>
+
+        <article class="blog-card">
+            <header>
+                <div class="blog-meta">April 28, 2026</div>
+                <h2><a href="importance-of-repetition.html">The Importance of Repetition in Sports and Learning</a></h2>
+            </header>
+            <p class="blog-excerpt">Repetition is one of the most important elements of improvement, both in sports and in academics. It is through repeating actions that true progress happens...</p>
+        </article>
+    </div>
+</body>
+</html>
