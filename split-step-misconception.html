@@ -24,8 +24,12 @@
             font-weight: 500; 
             display: inline-block;
             margin-bottom: 40px;
+            transition: transform 0.2s ease;
         }
-        .back-link:hover { text-decoration: underline; }
+        .back-link:hover { 
+            text-decoration: underline; 
+            transform: translateX(-4px);
+        }
         
         .article-header { margin-bottom: 40px; }
         .article-date { color: #86868b; font-size: 0.95rem; margin-bottom: 8px; }
@@ -52,22 +56,15 @@
             margin-bottom: 16px;
             color: #1d1d1f;
         }
-
-        h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-top: 32px;
-            margin-bottom: 12px;
-        }
         
-        ul, ol {
+        ul {
             font-size: 1.15rem;
             margin-bottom: 24px;
             padding-left: 24px;
         }
 
         li {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         /* Flow Diagram styling */
@@ -81,15 +78,7 @@
             margin: 28px 0;
             overflow-x: auto;
             color: #424245;
-        }
-
-        /* Callout highlight boxes */
-        .rule-box {
-            background-color: #f5f5f7;
-            padding: 28px;
-            border-radius: 16px;
-            margin: 40px 0;
-            border-left: 4px solid #1d1d1f;
+            white-space: pre-wrap;
         }
 
         .conclusion-box {
@@ -122,6 +111,7 @@
         }
         .references-section li {
             margin-bottom: 12px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -136,58 +126,58 @@
         </header>
 
         <section class="article-content">
-            <p>For decades, tennis coaches have relied on a golden rhythmic anchor to teach tracking and timing: the <strong>"Bounce-Hit"</strong> drill. Popularized in the late 20th century and a staple of early 2000s tennis, the drill is beautifully simple. You call out <em>"Hit"</em> the microsecond the ball leaves your opponent’s racket across the net, <em>"Bounce"</em> when it lands on your side, and <em>"Hit"</em> again when you make contact.</p>
+            <p>For decades, tennis coaches have relied on a golden rhythmic anchor to teach tracking and timing: the "Bounce-Hit" drill. Popularized in the late 20th century and a staple of early 2000s tennis, the drill is beautifully simple. You call out "Bounce" when the ball lands on your side, and "Hit" when you make contact.</p>
             
             <p>It creates a clean, hypnotic cadence. It calms the mind and gets the feet moving. But as baseline ball speeds have skyrocketed, sport science has revealed a hard truth: treating the game like a steady metronome might actually be holding your footwork back.</p>
             
-            <p>To understand why, we have to look across the net at the exact moment that first <em>"Hit"</em> occurs.</p>
+            <p>To understand why, we have to look across the net at the exact moment when "Hit" occurs.</p>
 
             <!-- Section 1 -->
             <h2>The Illusion of the Neutral "Hit"</h2>
-            <p>In the traditional application of the drill, the word <em>"Hit"</em> across the net serves as a universal starting gun. Classic coaching manuals taught that as the opponent strikes the ball, the receiving player should execute a perfectly timed, symmetrical split step—landing flat on both feet, completely neutral, ready to react left or right.</p>
+            <p>In the traditional application of the drill, the word "Hit" across the net serves as a universal starting gun. Classic coaching manuals taught that as the opponent strikes the ball, the receiving player should execute a perfectly timed, symmetrical split step—landing flat on both feet, completely neutral, ready to react left or right.</p>
             
-            <p>This approach assumes a luxury that modern tennis rarely affords: <strong>time</strong>.</p>
+            <p>This approach assumes a luxury that modern tennis rarely affords: time.</p>
             
-            <p>When players are trading heavy, topspin-laden groundstrokes at elite speeds, waiting for the ball to be struck before initiating a neutral landing leaves you at a massive structural disadvantage. If you land perfectly flat-footed <em>after</em> the ball is hit, you are already too late.</p>
+            <p>When players are trading heavy, topspin-laden groundstrokes at elite speeds, waiting for the ball to be struck before initiating a neutral landing leaves you at a massive structural disadvantage. If you land perfectly flat-footed after the ball is hit, you are already too late.</p>
 
             <!-- Section 2 -->
             <h2>The Mid-Air Reality of Modern Footwork</h2>
-            <p>This is where traditional rhythm clashes with modern biomechanics. According to the <strong>ITPA Tennis Performance Trainer (TPT) manual</strong>, the classic understanding of the split step is exposed as a widespread misconception. High-speed video analysis of elite players reveals that the split step is not a passive, neutral reset; it is an active, predictive launch sequence.</p>
+            <p>This is where traditional rhythm clashes with modern biomechanics. According to the ITPA Tennis Performance Trainer (TPT) manual, the classic understanding of the split step is exposed as a widespread misconception. High-speed video analysis of elite players reveals that the split step is not a passive, neutral reset; it is an active, predictive launch sequence.</p>
             
-            <p>The <strong>ITPA TPT manual</strong> highlights that elite athletes do not wait to land flat on the court before deciding where to move. Instead, they actively <strong>react in the air</strong> during the split step phase.</p>
+            <p>The ITPA TPT manual highlights that elite athletes do not wait to land flat on the court before deciding where to move. Instead, they actively react in the air during the split step phase.</p>
             
             <p>Before their feet even touch the ground, a modern player has already read the trajectory of the incoming ball. If a right-handed player realizes they need to move to their forehand side:</p>
             
             <ul>
-                <li>They subtly <strong>rotate their hip externally</strong> while still airborne.</li>
-                <li>They land <strong>asymmetrically</strong>, planting the foot furthest from their intended target a split-second ahead of the other foot (in this case, loading the left leg first to explode to the right).</li>
+                <li>They subtly rotate their hip externally while still airborne.</li>
+                <li>They land asymmetrically, planting the foot furthest from their intended target a split-second ahead of the other foot (in this case, loading the left leg first to explode to the right).</li>
                 <li>Their right foot lands pointing outwards, instantly loading the leg muscles like a coiled spring to explode toward the ball.</li>
             </ul>
 
             <div class="flow-container">
-Classic Rhythm:  [Opponent Hits] ➔ [You Land Neutrally] ➔ [You Read Direction] ➔ [You Move]
-Modern Rhythm:   [Opponent Prepares] ➔ [You Airborne] ➔ [You Read & Rotate Mid-Air] ➔ [Asymmetric Landing]
+Classic Rhythm: [Opponent Hits] ➔ [You Land Neutrally] ➔ [You Read Direction] ➔ [You Move] 
+
+Modern Rhythm: [Opponent Prepares] ➔ [You Airborne] ➔ [You Read & Rotate Mid-Air] ➔ [Asymmetric Landing]
             </div>
 
             <!-- Section 3 -->
             <h2>The Biomechanical Proof: The Stretch-Shortening Cycle</h2>
-            <p>To back up the observational data found in the <strong>ITPA guidelines</strong>, sports scientists have looked deeply into the neuromuscular variables of this exact movement. A landmark study by <em>Nieminen et al. (European Journal of Sports Science)</em> evaluated the kinetic advantages of the split step.</p>
+            <p>To back up the observational data found in the ITPA guidelines, sports scientists have looked deeply into the neuromuscular variables of this exact movement. A landmark study by Nieminen et al. (European Journal of Sports Science) evaluated the kinetic advantages of the split step.</p>
             
-            <p>The researchers discovered that a properly timed split step triggers a massive spike in <strong>Ground Reaction Forces (GRF)</strong> and relies heavily on the <strong>Stretch-Shortening Cycle (SSC)</strong>. The study highlighted that elite players exhibit substantial "pre-activation" of the leg and ankle muscles <em>before</em> they ever hit the ground.</p>
+            <p>The researchers discovered that a properly timed split step triggers a massive spike in Ground Reaction Forces (GRF) and relies heavily on the Stretch-Shortening Cycle (SSC). The study highlighted that elite players exhibit substantial "pre-activation" of the leg and ankle muscles before they ever hit the ground.</p>
             
             <p>By reading the ball mid-air and pre-activating the muscles, the athlete regulates leg stiffness on descent. When that first asymmetrical foot strikes the court, the potential elastic energy isn't absorbed or lost; it acts like a jolted spring, instantly rocketing the player toward the ball. If you use a strict, old-school "Bounce-Hit" cadence, you completely miss this mid-air window of muscle pre-activation.</p>
 
             <!-- Section 4 -->
             <h2>Integrating Old-School Rhythm with New-School Explosiveness</h2>
             <p>Does this mean the "Bounce-Hit" drill is obsolete? Not entirely.</p>
-            
             <p>The drill remains an exceptional tool for beginners and intermediate players who struggle with basic tracking, anxiety on court, or lazy feet. It builds the foundational neural pathways required to connect your eyes to your timing.</p>
             
-            <p>However, to survive the modern game, the drill needs a conceptual upgrade. Coaches and players must stop viewing the first "Hit" across the net as a static, balanced landing point. Instead, that moment should be treated as the peak of your airborne read—the exact split-second your hips rotate to conquer chaos before your feet ever touch the clay.</p>
+            <p>However, to survive the modern game, the drill needs a conceptual upgrade. Coaches and players must stop viewing the first "Hit" across the net as a static, balanced landing point. Instead, that moment should be treated as the peak of your airborne read—the exact split-second your hips rotate to conquer chaos before your feet ever touch the ground.</p>
 
             <!-- Conclusion Box -->
             <div class="conclusion-box">
-                The first "Hit" isn't a cue to land — it is your window to rotate, load, and conquer chaos before hitting the court. 🎾
+                The first "Hit" is a cue to land and it is also your window to rotate, load, and conquer chaos before hitting the court. 🎾
             </div>
 
             <!-- References Footer -->
