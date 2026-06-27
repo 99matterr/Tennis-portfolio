@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Colors of Competition: A Guide to Court Sizes, Ball Progressions, and Skill Mastery | Blog</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #1d1d1f;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+        .article-container { 
+            max-width: 680px; 
+            margin: 0 auto; 
+            padding-top: 20px;
+        }
+        .back-link { 
+            color: #0071e3; 
+            text-decoration: none; 
+            font-weight: 500; 
+            display: inline-block;
+            margin-bottom: 40px;
+            transition: transform 0.2s ease;
+        }
+        .back-link:hover { 
+            text-decoration: underline; 
+            transform: translateX(-4px);
+        }
+        
+        .article-header { margin-bottom: 40px; }
+        .article-date { color: #86868b; font-size: 0.95rem; margin-bottom: 8px; }
+        .article-title { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            letter-spacing: -0.03em; 
+            line-height: 1.2;
+            margin: 0;
+        }
+        
+        /* Typography Content Styles */
+        p { 
+            font-size: 1.15rem; 
+            color: #1d1d1f; 
+            margin-bottom: 24px; 
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            color: #1d1d1f;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        
+        ul, ol {
+            font-size: 1.15rem;
+            margin-bottom: 24px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Inline Link Styling */
+        .internal-link {
+            color: #0071e3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .internal-link:hover { text-decoration: underline; }
+
+        /* Responsive Video Embed Container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            margin: 24px 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            background-color: #f5f5f7;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* --- DIAGRAM 1: PREMIUM INFOGRAPHIC CHART --- */
+        .premium-chart-wrapper {
+            background-color: #f5f5f7;
+            border: 1px solid #e5e5e7;
+            border-radius: 20px;
+            padding: 24px;
+            margin: 36px 0;
+            box-sizing: border-box;
+        }
+        
+        .chart-grid {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chart-column {
+            flex: 1;
+            background: #ffffff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .column-header {
+            padding: 12px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .bg-red { background-color: #d9383a; }
+        .bg-orange { background-color: #f28d35; }
+        .bg-green { background-color: #5cb85c; }
+
+        .court-diagram-box {
+            padding: 20px 12px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #f0f0f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .column-data-block {
+            padding: 16px 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .data-group h5 {
+            margin: 0 0 4px 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #86868b;
+            letter-spacing: 0.05em;
+        }
+
+        .data-group p {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            line-height: 1.4;
+        }
+
+        .graphic-caption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6e6e73;
+            margin-top: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* --- DIAGRAM 2: BOUNCE TRACKER CHART --- */
+        .bounce-chart {
+            height: 220px;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            border-bottom: 3px solid #1d1d1f;
+            padding-bottom: 8px;
+            position: relative;
+            margin-top: 20px;
+        }
+        .bounce-channel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70px;
+            height: 100%;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 2;
+        }
+        .bounce-arc {
+            position: absolute;
+            bottom: 0;
+            width: 40px;
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+            border: 2px dashed #d2d2d7;
+            border-bottom: none;
+        }
+        .ball-node {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            position: absolute;
+        }
+        .node-red { background-color: #ff3b30; bottom: 45px; }
+        .arc-red { height: 56px; }
+        
+        .node-orange { background-color: #ff9500; bottom: 95px; }
+        .arc-orange { height: 106px; }
+        
+        .node-green { background-color: #34c759; bottom: 145px; border: 2px solid #ffffff; box-sizing: border-box; }
+        .arc-green { height: 156px; }
+        
+        .node-yellow { background-color: #d4f900; bottom: 195px; color: #1d1d1f; }
+        .arc-yellow { height: 206px; }
+
+        .bounce-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        /* Callout highlight boxes */
+        .rule-box {
+            background-color: #f5f5f7;
+            padding: 28px;
+            border-radius: 16px;
+            margin: 40px 0;
+            border-left: 4px solid #1d1d1f;
+        }
+
+        .conclusion-box {
+            background-color: rgba(0, 113, 227, 0.05);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 48px;
+            border: 1px solid rgba(0, 113, 227, 0.1);
+        }
+
+        .references-section {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #d2d2d7;
+        }
+        .references-section h3 {
+            color: #86868b;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .references-section ul {
+            font-size: 0.95rem;
+            color: #6e6e73;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .references-section li {
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 640px) {
+            .chart-grid { flex-direction: column; gap: 16px; }
+            .bounce-channel { width: 55px; }
+            .bounce-label { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="article-container">
+        <a href="blog.html" class="back-link">← Back to Blog</a>
+        
+        <header class="article-header">
+            <div class="article-date">Published February 11, 2026</div>
+            <h1 class="article-title">The Colors of Competition: Mapping Court Sizes, Ball Progressions, and True Skill Mastery</h1>
+        </header>
+
+        <section class="article-content">
+            <p>To the untrained eye, watching youth or developmental tennis tournaments looks like a chaotic, multi-colored festival. On one court, kids are scrambling across an abbreviated space with giant, squishy foam balls. On another, they are using a standard-sized court but trading balls bearing small green markings.</p>
+            
+            <p>This structural stratification is often called the youth progression framework. However, a major misconception persists within competitive parenting: the belief that these stages are a countdown of birthdays. Many believe that as soon as a child hits a specific age bracket, they must advance to a higher-speed ball.</p>
+            
+            <p>As previously analyzed in our breakdown on <a href="slower-tennis-balls.html" class="internal-link">Why Slower Tennis Balls Are Not Just for Kids</a>, equipment scaling is a question of functional skill execution, not calendar dates. Moving an athlete up to a faster environment before their tracking and movement systems have fully automated will destroy their tactical fluency and mechanical integrity.</p>
+            
+            <p>To understand what correct developmental competition actually looks like, we must break down the biomechanics, spatial mathematics, and visual execution across the three primary color-coded stages of the sport.</p>
+
+            <!-- Red Stage Section -->
+            <h2>1. The Red Stage: Building the Foundations of Tracking</h2>
+            <p>The journey begins on the Red Court. At this introductory tier, the entire environment is downsized to accommodate smaller statures and shorter limb lengths. The technical goal is to teach spatial orientation, foundational footwork recovery, and clean contact angles without forcing a defensive survival instinct.</p>
+            <ul>
+                <li><strong>Court Spatial Scale:</strong> Set up across the width of a regulation court, measuring precisely 36 feet long by 18 feet wide. The net is lowered to an accessible 33 inches (2 feet, 9 inches) at the center.</li>
+                <li><strong>Ball Dynamics & Physics:</strong> Red balls are noticeably oversized and composed of low-density felt or foam. They travel roughly 75% slower than a standard yellow ball and feature a dramatically restricted rebound height, keeping the ball strictly within the student's physical strike zone.</li>
+            </ul>
+
+            <!-- Video 1 & Video 2: Red Ball Demonstrations Organized Here -->
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/eQ4BvpRZN-I" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/KPU3WYp7aNA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <!-- Orange Stage Section -->
+            <h2>2. The Orange Stage: Expanding Spatial Boundaries</h2>
+            <p>Once an athlete can consistently dictate rally depth and move dynamically without losing their center of mass, they transition to the Orange Stage. This environment serves as a bridge, testing the player's lateral movement stamina and forcing them to start evaluating court geometry.</p>
+            <ul>
+                <li><strong>Court Spatial Scale:</strong> The space expands significantly to 60 feet long by 21 feet wide for singles (extending to 27 feet for doubles play). The net ascends to the regulation height of 36 inches (3 feet) at the center strap.</li>
+                <li><strong>Ball Dynamics & Physics:</strong> The orange ball matches the structural dimensions of a yellow ball but is compressed to travel 50% slower. Its bounce is faster and longer than a red ball, demanding heightened anticipation and faster footwork pre-activation.</li>
+            </ul>
+
+            <!-- Video 3: Orange Ball Demonstration Organized Here -->
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/2L1WpV0xPws" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <!-- Green Stage Section -->
+            <h2>3. The Green Stage: Transitioning to the Full Grid</h2>
+            <p>The Green Dot stage is the final stepping stone before standard yellow match play. This tier takes place on the complete adult court grid, but retains a slightly scaled ball matrix to ensure strategic processing remains intact during high-velocity exchanges.</p>
+            <ul>
+                <li><strong>Court Spatial Scale:</strong> Played on the official regulation full-sized court: 78 feet long by 27 feet wide (singles) or 36 feet wide (doubles), with a standard 3-foot net line.</li>
+                <li><strong>Ball Dynamics & Physics:</strong> Green dot balls are standard-sized felt projectiles pressurized at roughly 75% of a yellow ball's capacity, causing them to travel 25% slower. The lower compression prevents the ball from bouncing wildly over a developing player's shoulder line, allowing them to step in and take balls on the rise.</li>
+            </ul>
+
+            <!-- INFOGRAPHIC COMPONENT FOR COURT LINES & SPECIFICATIONS -->
+            <h2>Visualizing Play Grid Boundaries and Scaling</h2>
+            <p>To accurately understand how much spatial territory an athlete is responsible for protecting across distinct segments, analyze the complete multi-stage spatial comparison below inspired by the official ITF blueprint framework:</p>
+            
+            <div class="premium-chart-wrapper">
+                <div class="chart-grid">
+                    
+                    <!-- RED COLUMN -->
+                    <div class="chart-column">
+                        <div class="column-header bg-red">Red</div>
+                        <div class="court-diagram-box">
+                            <svg width="156" height="72" viewBox="0 0 156 72">
+                                <rect width="156" height="72" fill="#41935c"/>
+                                <rect x="36" y="0" width="42" height="72" fill="rgba(217, 56, 58, 0.6)" stroke="#ffffff" stroke-width="1" stroke-dasharray="2,1"/>
+                                <rect x="0" y="0" width="156" height="72" fill="none" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="0" y1="9" x2="156" y2="9" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="0" y1="63" x2="156" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="36" y1="9" x2="36" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="120" y1="9" x2="120" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="36" y1="36" x2="120" y2="36" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="78" y1="0" x2="78" y2="72" stroke="#ffffff" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="column-data-block">
+                            <div class="data-group">
+                                <h5>Court Size</h5>
+                                <p>36' × 18'</p>
+                            </div>
+                            <div class="data-group">
+                                <h5>Net Height</h5>
+                                <p>2'9" Center</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ORANGE COLUMN -->
+                    <div class="chart-column">
+                        <div class="column-header bg-orange">Orange</div>
+                        <div class="court-diagram-box">
+                            <svg width="156" height="72" viewBox="0 0 156 72">
+                                <rect width="156" height="72" fill="#41935c"/>
+                                <rect x="18" y="9" width="120" height="54" fill="rgba(242, 141, 53, 0.6)" stroke="#ffffff" stroke-width="1" stroke-dasharray="2,1"/>
+                                <rect x="0" y="0" width="156" height="72" fill="none" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="0" y1="9" x2="156" y2="9" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="0" y1="63" x2="156" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="36" y1="9" x2="36" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="120" y1="9" x2="120" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="36" y1="36" x2="120" y2="36" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="78" y1="0" x2="78" y2="72" stroke="#ffffff" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="column-data-block">
+                            <div class="data-group">
+                                <h5>Court Size</h5>
+                                <p>60' × 21' <small style="display:block; font-weight:400; color:#6e6e73;">(60' × 27' Doubles)</small></p>
+                            </div>
+                            <div class="data-group">
+                                <h5>Net Height</h5>
+                                <p>3' Center<br><small style="font-weight:400; color:#6e6e73;">3'6" at Posts</small></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GREEN COLUMN -->
+                    <div class="chart-column">
+                        <div class="column-header bg-green">Green</div>
+                        <div class="court-diagram-box">
+                            <svg width="156" height="72" viewBox="0 0 156 72">
+                                <rect width="156" height="72" fill="#41935c"/>
+                                <rect x="0" y="9" width="156" height="54" fill="rgba(92, 184, 92, 0.5)" stroke="#ffffff" stroke-width="1"/>
+                                <rect x="0" y="0" width="156" height="72" fill="none" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="0" y1="9" x2="156" y2="9" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="0" y1="63" x2="156" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="36" y1="9" x2="36" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="120" y1="9" x2="120" y2="63" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="36" y1="36" x2="120" y2="36" stroke="#ffffff" stroke-width="1"/>
+                                <line x1="78" y1="0" x2="78" y2="72" stroke="#ffffff" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div class="column-data-block">
+                            <div class="data-group">
+                                <h5>Court Size</h5>
+                                <p>78' × 27' <small style="display:block; font-weight:400; color:#6e6e73;">(78' × 36' Doubles)</small></p>
+                            </div>
+                            <div class="data-group">
+                                <h5>Net Height</h5>
+                                <p>3' Center<br><small style="font-weight:400; color:#6e6e73;">3'6" at Posts</small></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="graphic-caption">Figure 1.0: Structural alignment chart mapping scaled playing boundaries over standard dimensions. Note that Green Dot and Standard Yellow utilize the exact same physical baseline footprint layout.</div>
+            </div>
+
+            <!-- GRAPHIC 2: Ball Kinetic Bounce Chart -->
+            <h2>Visualizing Ball Rebound Mechanics</h2>
+            <p>Slowing down the ball isn't just about speed through the air—it changes the height of the bounce, allowing players to practice optimal strike mechanics rather than reaching overhead:</p>
+
+            <div class="graphic-wrapper">
+                <div class="bounce-chart">
+                    <!-- Red Ball Column -->
+                    <div class="bounce-channel">
+                        <div class="bounce-arc arc-red"></div>
+                        <div class="ball-node node-red">R</div>
+                    </div>
+                    <!-- Orange Ball Column -->
+                    <div class="bounce-channel">
+                        <div class="bounce-arc arc-orange"></div>
+                        <div class="ball-node node-orange">O</div>
+                    </div>
+                    <!-- Green Ball Column -->
+                    <div class="bounce-channel">
+                        <div class="bounce-arc arc-green"></div>
+                        <div class="ball-node node-green">G</div>
+                    </div>
+                    <!-- Yellow Ball Column -->
+                    <div class="bounce-channel">
+                        <div class="bounce-arc arc-yellow"></div>
+                        <div class="ball-node node-yellow">Y</div>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content: space-around; margin-top: 8px;">
+                    <div class="bounce-label" style="width:70px; color:#ff3b30;">Red<br><small>~25% Ht</small></div>
+                    <div class="bounce-label" style="width:70px; color:#ff9500;">Orange<br><small>~50% Ht</small></div>
+                    <div class="bounce-label" style="width:70px; color:#34c759;">Green<br><small>~75% Ht</small></div>
+                    <div class="bounce-label" style="width:70px; color:#a4c900;">Yellow<br><small>100% Ht</small></div>
+                </div>
+                <div class="graphic-caption">Figure 2.0: Linear rebound metrics indicating structural strike-zone maintenance relative to standard Yellow ball baseline parameters.</div>
+            </div>
+
+            <!-- The Strategic Blueprint -->
+            <div class="rule-box">
+                <h3 style="margin-top: 0;">The Universal Development Rule</h3>
+                <p>If you move an athlete to a larger court grid or a higher-velocity ball too quickly, you trigger a physiological survival state. Their swing path will shorten, their tracking mechanics will fracture, and their capacity to think tactically will drop to zero. Advancement must be earned through <strong>kinesthetic fluency and structural control</strong>, never by chronological age.</p>
+            </div>
+
+            <!-- Conclusion -->
+            <div class="conclusion-box">
+                The absolute goal of scaling is to build creative, moving tacticians—not stationary strikers panicked by incoming speed. 🎾
+            </div>
+
+            <!-- References Section -->
+            <footer class="references-section">
+                <h3>References</h3>
+                <ul>
+                    <li><strong>International Tennis Federation (ITF).</strong> (2012). <em>Rules of Tennis - Appendix VII: Official Specifications for Stage 1, 2, and 3 Slower Balls.</em> (Validating technical velocity boundaries and construction guidelines).</li>
+                    <li><strong>United States Tennis Association (USTA).</strong> (2016). <em>Junior Red, Orange, and Green Ball Tennis Regulations & Court Formatting Layouts.</em> (Providing structural grid standards for Sanctioned Youth Progression competitive play).</li>
+                    <li><strong>Buszard, T., Farrow, D., Reid, M., & Masters, R. S.</strong> (2014). <em>Scaling the equipment and play environment in children's sport to improve implicit learning.</em> Nonlinear Dynamics, Psychology, and Life Sciences, 18(2), 213-232.</li>
+                </ul>
+            </footer>
+        </section>
+    </div>
+
+</body>
+</html>
