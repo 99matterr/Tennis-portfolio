@@ -1,4 +1,249 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabriel Vasquez | Tennis Tools</title>
+    <style>
+    /* Global page layout matching your index design */
+    body {
+        margin: 0;
+        padding: 0 24px;
+        background-color: #f5f5f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    /* Premium glassmorphism container using your exact background config */
+    .premium-hero-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: center;
+        
+        padding: 60px 40px;
+        min-height: 75vh; 
+        width: 100%;
+        max-width: 1100px; 
+        margin: 40px auto;
+        
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        position: relative;
+        
+        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('IMG_5243.jpeg');
+        background-size: cover;
+        background-position: center;
+        
+        border-radius: 28px;
+        box-sizing: border-box;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        overflow-y: auto;
+    }
+
+    .hero-name {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: rgba(255, 255, 255, 0.75);
+        margin: 0 0 12px 0;
+        font-weight: 600;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: #ffffff;
+        margin: 0 0 10px 0;
+        line-height: 1.15;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #e8e8ed;
+        max-width: 600px;
+        margin: 0 0 40px 0;
+        font-weight: 400;
+        line-height: 1.5;
+        letter-spacing: -0.01em;
+    }
+
+    /* Premium Responsive Grid for Tools Cards */
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        width: 100%;
+        max-width: 900px;
+        margin-bottom: 40px;
+    }
+
+    /* Elegant frosted-glass card component styling */
+    .tool-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: left;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s;
+    }
+
+    .tool-card:hover {
+        transform: translateY(-4px);
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .tool-card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 0 0 10px 0;
+    }
+
+    .tool-card-desc {
+        font-size: 0.95rem;
+        color: #e8e8ed;
+        margin: 0 0 24px 0;
+        line-height: 1.5;
+        flex-grow: 1;
+    }
+
+    /* Multi-Button Layout Container inside cards */
+    .card-actions-row {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+    }
+
+    /* Pill-Shaped Action Buttons Matching Index Theme */
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none !important;
+        border-radius: 980px; 
+        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        letter-spacing: -0.01em;
+        box-sizing: border-box;
+        flex: 1;
+        text-align: center;
+    }
+
+    .primary-btn {
+        background-color: #ffffff;
+        color: #1d1d1f !important;
+        border: 1px solid #ffffff;
+    }
+
+    .primary-btn:hover {
+        background-color: #0071e3;
+        color: #ffffff !important;
+        border-color: #0071e3;
+        box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
+    }
+
+    .secondary-btn {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .secondary-btn:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .return-btn {
+        margin-top: auto;
+        padding: 14px 36px;
+        flex: none;
+    }
+
+    .disabled-btn {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    /* Mobile Scaling */
+    @media (max-width: 768px) {
+        body {
+            padding: 0 12px;
+        }
+        .premium-hero-container {
+            padding: 40px 20px;
+            min-height: auto;
+            margin: 20px 0;
+        }
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .tools-grid {
+            grid-template-columns: 1fr;
+        }
+        .card-actions-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="premium-hero-container">
+        <p class="hero-name">Gabriel Vasquez</p>
+        <h1 class="hero-title">Tennis Tools Hub</h1>
+        <p class="hero-subtitle">Interactive web applications designed for on-the-court tracking, coaching analytics, and match performance breakdown.</p>
+        
+        <div class="tools-grid">
+            <!-- APP CARD 1: Updated with dual choice mappings linking to both repository files -->
+            <div class="tool-card">
+                <div>
+                    <h3 class="tool-card-title">Scorekeeper Pro</h3>
+                    <p class="tool-card-desc">Court-side tracking tool for singles and doubles matches. Choose between the quick layout or advanced biomechanical shot metrics tracking.</p>
+                </div>
+                <div class="card-actions-row">
+                    <a class="hero-btn primary-btn" href="score-keeper-simple.html">Simple MVP</a>
+                    <a class="hero-btn secondary-btn" href="score-keeper-complex.html">Advanced Stats</a>
+                </div>
+            </div>
+
+            <!-- APP CARD 2: Future Tool Placeholder -->
+            <div class="tool-card">
+                <div>
+                    <h3 class="tool-card-title">Shot Map Plotter</h3>
+                    <p class="tool-card-desc">Visual tracking coordinates engine to map rally strike zones, ball depth variations, and error tracking metrics.</p>
+                </div>
+                <div class="card-actions-row">
+                    <a class="hero-btn disabled-btn" href="#">Under Construction</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home link button -->
+        <a class="hero-btn secondary-btn return-btn" href="index.html">Return to Portfolio</a>
+    </div>
+
+</body>
+</html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
