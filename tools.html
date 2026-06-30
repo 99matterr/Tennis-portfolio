@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gabriel Vasquez | Tennis Tools</title>
     <style>
-    /* Global page layout matching your index design */
+    /* Clean layout background matching your portfolio's base style */
     body {
         margin: 0;
         padding: 0 24px;
@@ -16,7 +16,7 @@
         min-height: 100vh;
     }
 
-    /* Premium glassmorphism container using your exact background config */
+    /* Premium white card container styling optimized for screen contrast */
     .premium-hero-container {
         display: flex;
         flex-direction: column;
@@ -33,37 +33,38 @@
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         position: relative;
         
-        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('IMG_5243.jpeg');
-        background-size: cover;
-        background-position: center;
-        
+        /* Transitioned from black overlay to a crisp white layout block */
+        background-color: #ffffff;
         border-radius: 28px;
         box-sizing: border-box;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
         overflow-y: auto;
+        border: 1px solid #e8e8ed;
     }
 
+    /* Minimal gray subtitle tag */
     .hero-name {
         font-size: 0.95rem;
         text-transform: uppercase;
         letter-spacing: 0.18em;
-        color: rgba(255, 255, 255, 0.75);
+        color: #86868b;
         margin: 0 0 12px 0;
         font-weight: 600;
     }
 
+    /* High contrast dark header matching portfolio gradient tones */
     .hero-title {
         font-size: 3rem;
         font-weight: 700;
         letter-spacing: -0.03em;
-        color: #ffffff;
+        color: #1d1d1f;
         margin: 0 0 10px 0;
         line-height: 1.15;
     }
 
     .hero-subtitle {
         font-size: 1.2rem;
-        color: #e8e8ed;
+        color: #515154;
         max-width: 600px;
         margin: 0 0 40px 0;
         font-weight: 400;
@@ -71,60 +72,58 @@
         letter-spacing: -0.01em;
     }
 
-    /* Premium Responsive Grid for Tools Cards */
+    /* Dynamic responsive grid for tool components */
     .tools-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 24px;
         width: 100%;
-        max-width: 900px;
+        max-width: 1000px;
         margin-bottom: 40px;
     }
 
-    /* Elegant frosted-glass card component styling */
+    /* Crisp soft-gray structural tool card definition */
     .tool-card {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background-color: #f5f5f7;
+        border: 1px solid #e8e8ed;
         border-radius: 20px;
         padding: 28px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         text-align: left;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s;
     }
 
     .tool-card:hover {
         transform: translateY(-4px);
-        background-color: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.3);
+        background-color: #fafafa;
+        border-color: #0071e3;
     }
 
     .tool-card-title {
         font-size: 1.4rem;
         font-weight: 600;
-        color: #ffffff;
+        color: #1d1d1f;
         margin: 0 0 10px 0;
     }
 
     .tool-card-desc {
         font-size: 0.95rem;
-        color: #e8e8ed;
+        color: #515154;
         margin: 0 0 24px 0;
         line-height: 1.5;
         flex-grow: 1;
     }
 
-    /* Multi-Button Layout Container inside cards */
+    /* Button alignment row container inside grid components */
     .card-actions-row {
         display: flex;
         gap: 12px;
         width: 100%;
     }
 
-    /* Pill-Shaped Action Buttons Matching Index Theme */
+    /* Premium structural pill buttons matching index theme elements */
     .hero-btn {
         display: inline-flex;
         align-items: center;
@@ -141,44 +140,54 @@
         text-align: center;
     }
 
+    /* Blue Highlight Action Button */
     .primary-btn {
-        background-color: #ffffff;
-        color: #1d1d1f !important;
-        border: 1px solid #ffffff;
+        background-color: #0071e3;
+        color: #ffffff !important;
+        border: 1px solid #0071e3;
     }
 
     .primary-btn:hover {
-        background-color: #0071e3;
-        color: #ffffff !important;
-        border-color: #0071e3;
-        box-shadow: 0 8px 20px rgba(0, 113, 227, 0.3);
+        background-color: #0077ed;
+        border-color: #0077ed;
+        box-shadow: 0 8px 20px rgba(0, 113, 227, 0.2);
     }
 
+    /* White Secondary Action Button style layout */
     .secondary-btn {
-        background-color: rgba(255, 255, 255, 0.15);
-        color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: #ffffff;
+        color: #1d1d1f !important;
+        border: 1px solid #d2d2d7;
     }
 
     .secondary-btn:hover {
-        background-color: rgba(255, 255, 255, 0.25);
+        background-color: #f5f5f7;
+        border-color: #86868b;
     }
 
     .return-btn {
         margin-top: auto;
         padding: 14px 36px;
         flex: none;
+        background-color: #1d1d1f;
+        color: #ffffff !important;
+        border: 1px solid #1d1d1f;
+    }
+
+    .return-btn:hover {
+        background-color: #000000;
+        border-color: #000000;
     }
 
     .disabled-btn {
-        background-color: rgba(255, 255, 255, 0.05);
-        color: rgba(255, 255, 255, 0.3) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background-color: #e8e8ed;
+        color: #a0a0ab !important;
+        border: 1px solid #e8e8ed;
         cursor: not-allowed;
         pointer-events: none;
     }
 
-    /* Mobile Scaling */
+    /* Mobile Responsive Logic Viewport Adapters */
     @media (max-width: 768px) {
         body {
             padding: 0 12px;
@@ -210,26 +219,37 @@
     <div class="premium-hero-container">
         <p class="hero-name">Gabriel Vasquez</p>
         <h1 class="hero-title">Tennis Tools Hub</h1>
-        <p class="hero-subtitle">Interactive web applications designed for on-the-court tracking, coaching analytics, and match performance breakdown.</p>
+        <p class="hero-subtitle">Interactive web tools built to organize tournaments, manage club programs, and track performance data cleanly.</p>
         
         <div class="tools-grid">
-            <!-- APP CARD 1: Updated with dual choice mappings linking to both repository files -->
+            <!-- CARDS ENGINE 1: Unified dual-choice court tracking tool launcher -->
             <div class="tool-card">
                 <div>
                     <h3 class="tool-card-title">Scorekeeper Pro</h3>
-                    <p class="tool-card-desc">Court-side tracking tool for singles and doubles matches. Choose between the quick layout or advanced biomechanical shot metrics tracking.</p>
+                    <p class="tool-card-desc">Umpire side tracking app for point matches. Choose between direct game-state logs or advanced stroke metric logging.</p>
                 </div>
                 <div class="card-actions-row">
-                    <a class="hero-btn primary-btn" href="score-keeper-simple.html">Simple MVP</a>
-                    <a class="hero-btn secondary-btn" href="score-keeper-complex.html">Advanced Stats</a>
+                    <a class="hero-btn secondary-btn" href="score-keeper-simple.html">Simple MVP</a>
+                    <a class="hero-btn primary-btn" href="score-keeper-complex.html">Advanced Stats</a>
                 </div>
             </div>
 
-            <!-- APP CARD 2: Future Tool Placeholder -->
+            <!-- CARDS ENGINE 2: Tournament & Draw Manager tool placeholder -->
             <div class="tool-card">
                 <div>
-                    <h3 class="tool-card-title">Shot Map Plotter</h3>
-                    <p class="tool-card-desc">Visual tracking coordinates engine to map rally strike zones, ball depth variations, and error tracking metrics.</p>
+                    <h3 class="tool-card-title">League Organizer</h3>
+                    <p class="tool-card-desc">A custom engine to draw dynamic match trees, manage bracket seedings, generate rotation match lists, and calculate league stand tables.</p>
+                </div>
+                <div class="card-actions-row">
+                    <a class="hero-btn disabled-btn" href="#">Under Construction</a>
+                </div>
+            </div>
+
+            <!-- CARDS ENGINE 3: Academy Operations Admin tool placeholder -->
+            <div class="tool-card">
+                <div>
+                    <h3 class="tool-card-title">Academy Manager</h3>
+                    <p class="tool-card-desc">Administrative coordination panel tracking program lesson timetables, court rotation reservations, and training lists.</p>
                 </div>
                 <div class="card-actions-row">
                     <a class="hero-btn disabled-btn" href="#">Under Construction</a>
@@ -237,8 +257,8 @@
             </div>
         </div>
 
-        <!-- Home link button -->
-        <a class="hero-btn secondary-btn return-btn" href="index.html">Return to Portfolio</a>
+        <!-- Styled main deck exit path navigation asset link -->
+        <a class="hero-btn return-btn" href="index.html">Return to Portfolio</a>
     </div>
 
 </body>
