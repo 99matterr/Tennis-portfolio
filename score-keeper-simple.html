@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamlined Tennis Tracker</title>
+    <style>
+        :root {
+            --bg-main: #000000;
+            --bg-card: #121212;
+            --accent-blue: #007aff;
+            --accent-yellow: #e1ff00;
+            --accent-red: #ff3b30;
+            --accent-green: #34c759;
+            --text-main: #ffffff;
+            --text-muted: #8e8e93;
+            --border-color: #2c2c2e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #222;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tennis-app {
+            background-color: var(--bg-main);
+            width: 100%;
+            max-width: 430px;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 4px solid #333;
+            padding-bottom: 25px;
+        }
+
+        .app-header {
+            background-color: var(--accent-blue);
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .match-type-bar {
+            background-color: var(--bg-card);
+            padding: 10px 20px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mode-btn {
+            flex: 1;
+            background: #2c2c2e;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .mode-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .set-game-row {
+            background-color: var(--bg-card);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .team-section-title {
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .player-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .player-identity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .server-dot {
+            width: 10px;
+            height: 10px;
+            background-color: transparent;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .server-dot.serving {
+            background-color: var(--accent-yellow);
+            box-shadow: 0 0 8px var(--accent-yellow);
+        }
+
+        .editable-name {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+            width: 70%;
+            border-bottom: 1px dashed transparent;
+        }
+
+        .editable-name:focus {
+            border-bottom-color: var(--accent-blue);
+        }
+
+        .match-score-badge {
+            color: var(--text-main);
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .main-display {
+            padding: 25px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .score-block {
+            text-align: center;
+            flex: 1;
+        }
+
+        .score-label {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .big-score {
+            font-size: 5.5rem;
+            font-weight: 800;
+            line-height: 1;
+            color: white;
+        }
+
+        .quick-stat-entry-grid {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .team-stat-block {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .stat-btn-row.doubles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .player-action-card {
+            background: #1c1c1e;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            max-width: 180px;
+        }
+
+        .stat-btn-row.doubles .player-action-card {
+            max-width: none;
+        }
+
+        .player-action-card span {
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stat-trigger-btn {
+            width: 100%;
+            border: none;
+            padding: 10px 4px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .btn-win { background-color: var(--accent-blue); }
+        .btn-err { background-color: var(--accent-red); }
+
+        .utility-container {
+            padding: 10px 20px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            background: #2c2c2e;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .action-btn.reset-btn {
+            background-color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+    </style>
+</head>
+<body>
+
+<div class="tennis-app">
+    <div class="app-header">
+        <span>🎾 Scorekeeper Pro MVP</span>
+        <span id="current-date">June 29, 2026</span>
+    </div>
+
+    <div class="match-type-bar">
+        <button class="mode-btn active" id="mode-singles" onclick="switchMatchMode('singles')">Singles</button>
+        <button class="mode-btn" id="mode-doubles" onclick="switchMatchMode('doubles')">Doubles</button>
+    </div>
+
+    <div class="set-game-row">
+        <div class="team-section-title" id="title-t1">Team 1</div>
+        <div class="player-row" id="row-p1a">
+            <div class="player-identity">
+                <div class="server-dot serving" id="dot-p1a" onclick="setServerDirect(1)"></div>
+                <input type="text" class="editable-name" value="Player 1" id="name-p1a" oninput="syncLabels()">
+            </div>
+            <div class="match-score-badge" id="badge-t1">0 Sets (0 Games)</div>
+        </div>
+        <div class="player-row" id="row-p1b" style="display: none;">
+            <div class="player-identity">
+                <div class="server-dot" id="dot-p1b" onclick="setServerDirect(2)"></div>
+                <input type="text" class="editable-name" value="Partner 1" id="name-p1b" oninput="syncLabels()">
+            </div>
+        </div>
+
+        <div class="team-section-title" id="title-t2" style="margin-top: 5px;">Team 2</div>
+        <div class="player-row" id="row-p2a">
+            <div class="player-identity">
+                <div class="server-dot" id="dot-p2a" onclick="setServerDirect(3)"></div>
+                <input type="text" class="editable-name" value="Player 2" id="name-p2a" oninput="syncLabels()">
+            </div>
+            <div class="match-score-badge" id="badge-t2">0 Sets (0 Games)</div>
+        </div>
+        <div class="player-row" id="row-p2b" style="display: none;">
+            <div class="player-identity">
+                <div class="server-dot" id="dot-p2b" onclick="setServerDirect(4)"></div>
+                <input type="text" class="editable-name" value="Partner 2" id="name-p2b" oninput="syncLabels()">
+            </div>
+        </div>
+    </div>
+
+    <div class="main-display">
+        <div class="score-block">
+            <div class="score-label" id="lbl-t1">Team 1</div>
+            <div class="big-score" id="score-t1">0</div>
+        </div>
+        <div class="score-block">
+            <div class="score-label" id="lbl-t2">Team 2</div>
+            <div class="big-score" id="score-t2">0</div>
+        </div>
+    </div>
+
+    <div class="quick-stat-entry-grid">
+        <div class="team-stat-block">
+            <div class="team-section-title" id="card-t1-title">Team 1 Actions</div>
+            <div class="stat-btn-row" id="grid-t1">
+                <div class="player-action-card" id="card-p1a">
+                    <span id="lbl-btn-p1a">Player 1</span>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="stat-trigger-btn btn-win" onclick="logPointDirect(1, 1, 'Winner')">Winner</button>
+                        <button class="stat-trigger-btn btn-err" onclick="logPointDirect(2, 1, 'Error')">Error</button>
+                    </div>
+                </div>
+                <div class="player-action-card" id="card-p1b" style="display: none;">
+                    <span id="lbl-btn-p1b">Partner 1</span>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="stat-trigger-btn btn-win" onclick="logPointDirect(1, 2, 'Winner')">Winner</button>
+                        <button class="stat-trigger-btn btn-err" onclick="logPointDirect(2, 2, 'Error')">Error</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-stat-block">
+            <div class="team-section-title" id="card-t2-title">Team 2 Actions</div>
+            <div class="stat-btn-row" id="grid-t2">
+                <div class="player-action-card" id="card-p2a">
+                    <span id="lbl-btn-p2a">Player 2</span>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="stat-trigger-btn btn-win" onclick="logPointDirect(2, 3, 'Winner')">Winner</button>
+                        <button class="stat-trigger-btn btn-err" onclick="logPointDirect(1, 3, 'Error')">Error</button>
+                    </div>
+                </div>
+                <div class="player-action-card" id="card-p2b" style="display: none;">
+                    <span id="lbl-btn-p2b">Partner 2</span>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="stat-trigger-btn btn-win" onclick="logPointDirect(2, 4, 'Winner')">Winner</button>
+                        <button class="stat-trigger-btn btn-err" onclick="logPointDirect(1, 4, 'Error')">Error</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="utility-container">
+        <button class="action-btn" onclick="undoPoint()">Undo Point ↩</button>
+        <button class="action-btn reset-btn" onclick="resetMatch()">Reset Match</button>
+    </div>
+</div>
+
+<script>
+    // New storage namespace key bypasses dirty cross-version local cache collisions
+    const STORAGE_KEY = 'minimal_tennis_tracker_v2';
+
+    let state = {
+        matchMode: 'singles',
+        currentServer: 1, 
+        scoreData: {
+            t1: { points: 0, games: 0, sets: 0 },
+            t2: { points: 0, games: 0, sets: 0 }
+        },
+        history: []
+    };
+
+    const scoreMap = ["0", "15", "30", "40", "A"];
+
+    function getPlayerName(num) {
+        if (num === 1) return document.getElementById('name-p1a').value || "Player 1";
+        if (num === 2) return document.getElementById('name-p1b').value || "Partner 1";
+        if (num === 3) return document.getElementById('name-p2a').value || "Player 2";
+        if (num === 4) return document.getElementById('name-p2b').value || "Partner 2";
+        return "";
+    }
+
+    function syncLabels() {
+        const isSingles = (state.matchMode === 'singles');
+        
+        document.getElementById('title-t1').innerText = isSingles ? getPlayerName(1) : "Team 1";
+        document.getElementById('title-t2').innerText = isSingles ? getPlayerName(3) : "Team 2";
+        document.getElementById('lbl-t1').innerText = isSingles ? getPlayerName(1) : "Team 1";
+        document.getElementById('lbl-t2').innerText = isSingles ? getPlayerName(3) : "Team 2";
+        
+        document.getElementById('card-t1-title').innerText = isSingles ? `${getPlayerName(1)} Action` : "Team 1 Action Panel";
+        document.getElementById('card-t2-title').innerText = isSingles ? `${getPlayerName(3)} Action` : "Team 2 Action Panel";
+
+        document.getElementById('lbl-btn-p1a').innerText = getPlayerName(1);
+        document.getElementById('lbl-btn-p1b').innerText = getPlayerName(2);
+        document.getElementById('lbl-btn-p2a').innerText = getPlayerName(3);
+        document.getElementById('lbl-btn-p2b').innerText = getPlayerName(4);
+        
+        saveState();
+    }
+
+    function switchMatchMode(mode) {
+        state.matchMode = mode;
+        document.getElementById('mode-singles').classList.toggle('active', mode === 'singles');
+        document.getElementById('mode-doubles').classList.toggle('active', mode === 'doubles');
+
+        const isDoubles = (mode === 'doubles');
+        document.getElementById('row-p1b').style.display = isDoubles ? 'flex' : 'none';
+        document.getElementById('row-p2b').style.display = isDoubles ? 'flex' : 'none';
+        document.getElementById('card-p1b').style.display = isDoubles ? 'block' : 'none';
+        document.getElementById('card-p2b').style.display = isDoubles ? 'block' : 'none';
+
+        document.getElementById('grid-t1').className = isDoubles ? "stat-btn-row doubles" : "stat-btn-row";
+        document.getElementById('grid-t2').className = isDoubles ? "stat-btn-row doubles" : "stat-btn-row";
+
+        if (!isDoubles && (state.currentServer === 2 || state.currentServer === 4)) {
+            state.currentServer = 1;
+        }
+        
+        syncLabels();
+        renderDisplay();
+    }
+
+    function setServerDirect(num) {
+        state.currentServer = num;
+        renderDisplay();
+    }
+
+    function rotateServerAuto() {
+        if (state.matchMode === 'singles') {
+            state.currentServer = (state.currentServer === 1) ? 3 : 1;
+        } else {
+            let order = [1, 3, 2, 4];
+            let idx = order.indexOf(state.currentServer);
+            state.currentServer = order[(idx + 1) % 4];
+        }
+    }
+
+    function logPointDirect(winningTeamNum, playerActed, type) {
+        state.history.push(JSON.parse(JSON.stringify({
+            scoreData: state.scoreData,
+            currentServer: state.currentServer
+        })));
+
+        let scorer = (winningTeamNum === 1) ? state.scoreData.t1 : state.scoreData.t2;
+        let opponent = (winningTeamNum === 1) ? state.scoreData.t2 : state.scoreData.t1;
+
+        scorer.points++;
+
+        if (scorer.points >= 4 && (scorer.points - opponent.points) >= 2) {
+            scorer.games++;
+            state.scoreData.t1.points = 0;
+            state.scoreData.t2.points = 0;
+            rotateServerAuto();
+
+            if (scorer.games >= 6 && (scorer.games - opponent.games) >= 2) {
+                scorer.sets++;
+                state.scoreData.t1.games = 0;
+                state.scoreData.t2.games = 0;
+            }
+        } else if (scorer.points >= 3 && opponent.points >= 3 && scorer.points === opponent.points) {
+            state.scoreData.t1.points = 3;
+            state.scoreData.t2.points = 3;
+        }
+
+        renderDisplay();
+    }
+
+    function undoPoint() {
+        if (state.history.length === 0) return;
+        let lastState = state.history.pop();
+        state.scoreData = lastState.scoreData;
+        state.currentServer = lastState.currentServer;
+        renderDisplay();
+    }
+
+    function resetMatch() {
+        if (confirm("Reset current match scores back to zero?")) {
+            localStorage.removeItem(STORAGE_KEY);
+            state.scoreData = {
+                t1: { points: 0, games: 0, sets: 0 },
+                t2: { points: 0, games: 0, sets: 0 }
+            };
+            state.currentServer = 1;
+            state.history = [];
+            renderDisplay();
+        }
+    }
+
+    function renderDisplay() {
+        let t1Out = scoreMap[Math.min(state.scoreData.t1.points, 4)];
+        let t2Out = scoreMap[Math.min(state.scoreData.t2.points, 4)];
+
+        if (state.scoreData.t1.points >= 3 && state.scoreData.t2.points >= 3) {
+            if (state.scoreData.t1.points === state.scoreData.t2.points) { t1Out = "40"; t2Out = "40"; }
+            else if (state.scoreData.t1.points > state.scoreData.t2.points) { t1Out = "A"; t2Out = "40"; }
+            else { t1Out = "40"; t2Out = "A"; }
+        }
+
+        document.getElementById('score-t1').innerText = t1Out;
+        document.getElementById('score-t2').innerText = t2Out;
+
+        document.getElementById('badge-t1').innerText = `${state.scoreData.t1.sets} Sets (${state.scoreData.t1.games} Games)`;
+        document.getElementById('badge-t2').innerText = `${state.scoreData.t2.sets} Sets (${state.scoreData.t2.games} Games)`;
+
+        document.getElementById('dot-p1a').classList.toggle('serving', state.currentServer === 1);
+        document.getElementById('dot-p1b').classList.toggle('serving', state.currentServer === 2);
+        document.getElementById('dot-p2a').classList.toggle('serving', state.currentServer === 3);
+        document.getElementById('dot-p2b').classList.toggle('serving', state.currentServer === 4);
+
+        saveState();
+    }
+
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+    document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const cache = localStorage.getItem(STORAGE_KEY);
+    if (cache) {
+        state = JSON.parse(cache);
+        switchMatchMode(state.matchMode);
+    } else {
+        switchMatchMode('singles');
+    }
+</script>
+</body>
+</html>
