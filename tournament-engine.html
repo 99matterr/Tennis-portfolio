@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchpoint - Ultimate Tournament Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0b0f19; color: #f3f4f6; }
+        .accent-glow { box-shadow: 0 0 15px rgba(249, 115, 22, 0.15); }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen pb-12">
+
+    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="bg-orange-500 text-slate-950 p-2 rounded-lg font-black tracking-tighter text-xl">MP</div>
+            <h1 class="text-xl font-bold tracking-tight text-white">MATCHPOINT <span class="text-orange-500 font-medium text-sm border border-orange-500/30 px-2 py-0.5 rounded ml-2">CORE</span></h1>
+        </div>
+        <div id="active-view-indicator" class="text-xs uppercase font-mono tracking-widest text-orange-400 font-bold bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-lg hidden">
+            Live Tournament Mode
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        
+        <section id="sec-setup" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-6 h-fit space-y-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">1. Competitor Registry</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">Paste list/column from Excel or separate by commas.</p>
+                    </div>
+                    
+                    <div>
+                        <textarea id="player-name-input" rows="3" placeholder="Paste Excel column here..." class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none font-mono"></textarea>
+                    </div>
+                    
+                    <button onclick="addPlayer()" class="w-full bg-gray-800 border border-gray-700 text-white font-bold py-2 rounded-lg text-sm hover:bg-gray-700 transition">
+                        Add & Parse Competitors
+                    </button>
+
+                    <div class="pt-4 border-t border-gray-800 space-y-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-white">2. Scoring System Configuration</h3>
+                            <p class="text-[11px] text-gray-400">Define the match mechanics for the field.</p>
+                        </div>
+
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-gray-400 font-medium mb-1">Set Length Format</label>
+                                <select id="rule-set-type" class="w-full bg-gray-950 border border-gray-800 text-gray-200 p-2 rounded-lg focus:border-orange-500 focus:outline-none">
+                                    <option value="6">Standard Sets (First to 6 Games)</option>
+                                    <option value="8">Pro Sets (First to 8 Games)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-400 font-medium mb-1">Deciding Third Set Type</label>
+                                <select id="rule-third-set" class="w-full bg-gray-950 border border-gray-800 text-gray-200 p-2 rounded-lg focus:border-orange-500 focus:outline-none">
+                                    <option value="match-tb">10-Point Match Tiebreaker instead of 3rd Set</option>
+                                    <option value="full-set">Full Third Set (Played to same game target)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-400 font-medium mb-1">Standard Set Tiebreak Points</label>
+                                <select id="rule-tb-points" class="w-full bg-gray-950 border border-gray-800 text-gray-200 p-2 rounded-lg focus:border-orange-500 focus:outline-none">
+                                    <option value="7">7 Points (Win by 2)</option>
+                                    <option value="10">10 Points (Win by 2)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-800 space-y-3">
+                        <h3 class="text-sm font-bold text-white">3. Select Tournament Draw Style</h3>
+                        <div class="grid grid-cols-1 gap-2">
+                            <label class="flex items-start p-2.5 bg-gray-950 border border-orange-500/40 rounded-xl cursor-pointer hover:bg-gray-900/50 transition token-card" id="card-opt-bracket">
+                                <input type="radio" name="tournament-format" value="bracket" checked onclick="toggleFormatUI('bracket')" class="mt-1 accent-orange-500">
+                                <div class="ml-3">
+                                    <span class="block text-xs font-bold text-white uppercase tracking-wide">Knockout Bracket</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start p-2.5 bg-gray-950 border border-gray-800 rounded-xl cursor-pointer hover:bg-gray-900/50 transition token-card" id="card-opt-league-winloss">
+                                <input type="radio" name="tournament-format" value="league-winloss" onclick="toggleFormatUI('league-winloss')" class="mt-1 accent-orange-500">
+                                <div class="ml-3">
+                                    <span class="block text-xs font-bold text-white uppercase tracking-wide">Round Robin (Win/Loss)</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start p-2.5 bg-gray-950 border border-gray-800 rounded-xl cursor-pointer hover:bg-gray-900/50 transition token-card" id="card-opt-league-points">
+                                <input type="radio" name="tournament-format" value="league-points" onclick="toggleFormatUI('league-points')" class="mt-1 accent-orange-500">
+                                <div class="ml-3">
+                                    <span class="block text-xs font-bold text-white uppercase tracking-wide">Round Robin (Points Scale)</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="generateTournament()" class="w-full bg-orange-500 text-slate-950 font-black py-3 rounded-lg text-sm hover:bg-orange-400 transition tracking-wide accent-glow uppercase">
+                        ⚡ Shuffle & Launch Tournament
+                    </button>
+                </div>
+
+                <div class="lg:col-span-2 bg-gray-900/60 border border-gray-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-md font-bold text-white">Registered Competitors Field (<span id="player-count" class="text-orange-500 font-bold">0</span>)</h3>
+                            <div class="flex gap-2">
+                                <button onclick="loadSamplePlayers(8)" class="text-xs text-orange-400 hover:underline font-medium">⚡ Load 8 Players</button>
+                                <span class="text-gray-700">•</span>
+                                <button onclick="loadSamplePlayers(32)" class="text-xs text-orange-400 hover:underline font-medium">⚡ Load 32 Players</button>
+                            </div>
+                        </div>
+                        <div class="overflow-y-auto max-h-[460px] border border-gray-800 rounded-xl bg-gray-950 p-2">
+                            <ul id="player-list" class="divide-y divide-gray-800/60 text-sm">
+                                <li id="empty-state-li" class="p-8 text-gray-500 italic text-center text-xs">No players registered yet. Paste your roster spreadsheet or click a sample link.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="pt-4 text-left">
+                        <button onclick="clearRoster()" class="text-xs text-rose-500 hover:text-rose-400 font-semibold underline">Clear Entire Roster</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="tournament-workspace" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 space-y-4">
+                <button onclick="returnToSetup()" class="bg-gray-900 hover:bg-gray-800 text-xs font-semibold px-4 py-2 rounded-lg border border-gray-800 text-gray-300 transition flex items-center gap-2 w-fit">
+                    ← Edit Roster & Settings
+                </button>
+
+                <div id="sec-bracket" class="bg-gray-900/60 border border-gray-800 rounded-xl p-6 accent-glow hidden">
+                    <h2 class="text-lg font-bold text-white mb-1">Championship Bracket Layout</h2>
+                    <p class="text-xs text-gray-400 mb-6">Seeds have been completely randomized. Click any match box to report scores.</p>
+                    <div id="bracket-render-area" class="flex items-start gap-8 overflow-x-auto py-4"></div>
+                </div>
+
+                <div id="sec-league" class="bg-gray-900/60 border border-gray-800 rounded-xl p-6 accent-glow hidden">
+                    <h2 id="league-title-header" class="text-lg font-bold text-white mb-1">League Dashboard & Live Standings</h2>
+                    <p id="league-desc-header" class="text-xs text-gray-400 mb-6">Rankings recalculate in real-time as match records are submitted.</p>
+                    
+                    <div class="overflow-x-auto mb-8 border border-gray-800 rounded-xl bg-gray-950/40">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-800 text-gray-400 font-medium bg-gray-950/80" id="league-th-row"></tr>
+                            </thead>
+                            <tbody id="league-leaderboard-body" class="divide-y divide-gray-800/50 text-gray-300"></tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2 text-gray-400">
+                        <span>●</span> Scheduled Group Fixtures
+                    </h3>
+                    <div id="league-fixtures-area" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2"></div>
+                </div>
+            </div>
+
+            <div id="reporting-sidebar" class="bg-gray-900/60 border border-gray-800 rounded-xl p-6 h-fit sticky top-24 self-start">
+                <div class="mb-4">
+                    <h3 class="text-md font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                        Decentralized Score Entry
+                    </h3>
+                    <p class="text-xs text-gray-400 mt-1">Select an active match box template to parse score properties.</p>
+                </div>
+
+                <div class="space-y-4 border-t border-gray-800 pt-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1 font-semibold">Active Target Match</label>
+                        <div id="form-match-label" class="bg-gray-950 border border-gray-800 rounded-lg p-3 text-sm text-gray-400 italic">No match target selected...</div>
+                        <input type="hidden" id="input-match-id">
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-2 text-center items-center">
+                        <div></div>
+                        <div class="text-[10px] uppercase text-gray-500 font-bold">Set 1</div>
+                        <div class="text-[10px] uppercase text-gray-500 font-bold">Set 2</div>
+                        <div class="text-[10px] uppercase text-orange-500 font-bold transition-all duration-200" id="header-set3">Set 3</div>
+
+                        <div class="text-xs font-medium text-left truncate text-white" id="label-p1">Player A</div>
+                        <input type="number" min="0" max="99" value="0" id="p1-s1" class="bg-gray-950 border border-gray-800 rounded p-1.5 text-center text-sm font-mono text-white focus:border-orange-500 focus:outline-none">
+                        <input type="number" min="0" max="99" value="0" id="p1-s2" class="bg-gray-950 border border-gray-800 rounded p-1.5 text-center text-sm font-mono text-white focus:border-orange-500 focus:outline-none">
+                        <input type="number" min="0" max="99" value="0" id="p1-s3" class="bg-gray-950 border border-gray-800 rounded p-1.5 text-center text-sm font-mono text-white focus:border-orange-500 focus:outline-none">
+
+                        <div class="text-xs font-medium text-left truncate text-gray-400" id="label-p2">Player B</div>
+                        <input type="number" min="0" max="99" value="0" id="p2-s1" class="bg-gray-950 border border-gray-800 rounded p-1.5 text-center text-sm font-mono text-white focus:border-orange-500 focus:outline-none">
+                        <input type="number" min="0" max="99" value="0" id="p2-s2" class="bg-gray-950 border border-gray-800 rounded p-1.5 text-center text-sm font-mono text-white focus:border-orange-500 focus:outline-none">
+                        <input type="number" min="0" max="99" value="0" id="p2-s3" class="bg-gray-950 border border-gray-800 rounded p-1.5 text-center text-sm font-mono text-white focus:border-orange-500 focus:outline-none">
+                    </div>
+
+                    <div class="pt-2 border-t border-gray-800">
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1 font-semibold">Security Certification PIN</label>
+                        <input type="text" id="input-pin" placeholder="Enter 4-Digit Match PIN" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-center font-mono uppercase tracking-widest text-orange-400 focus:border-orange-500 focus:outline-none">
+                    </div>
+
+                    <button onclick="processScoreSubmission()" class="w-full bg-orange-500 text-slate-950 font-bold py-2.5 rounded-lg text-sm hover:bg-orange-400 transition">
+                        Verify & Submit Score
+                    </button>
+                    <div id="feedback-msg" class="text-xs text-center font-medium hidden"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // GLOBAL DATA MODELS ARCHITECTURE 
+        let globalPlayers = [];
+        let activeMatches = {}; 
+        let leagueStandings = {}; 
+        let activeFormatMode = "bracket";
+
+        // Global Active Settings Object Hydrated at Gen Time
+        let activeRules = {
+            gamesToWin: 6,
+            thirdSetType: "match-tb",
+            tbPointsTarget: 7
+        };
+
+        function toggleFormatUI(mode) {
+            ['bracket', 'league-winloss', 'league-points'].forEach(m => {
+                document.getElementById(`card-opt-${m}`).className = "flex items-start p-2.5 bg-gray-950 border border-gray-800 rounded-xl cursor-pointer hover:bg-gray-900/50 transition token-card";
+            });
+            document.getElementById(`card-opt-${mode}`).className = "flex items-start p-2.5 bg-gray-950 border border-orange-500/40 rounded-xl cursor-pointer hover:bg-gray-900/50 transition token-card";
+        }
+
+        function renderPlayerList() {
+            const list = document.getElementById('player-list');
+            document.getElementById('player-count').innerText = globalPlayers.length;
+            if (globalPlayers.length === 0) {
+                list.innerHTML = `<li id="empty-state-li" class="p-8 text-gray-500 italic text-center text-xs">No players registered yet. Paste your roster spreadsheet or click a sample link.</li>`;
+                return;
+            }
+            list.innerHTML = globalPlayers.map((p, idx) => `
+                <div class="flex justify-between items-center p-2.5 hover:bg-gray-900/40 rounded transition">
+                    <span class="font-medium text-white"><span class="text-gray-500 text-xs mr-2">#${idx+1}</span>${p}</span>
+                    <button onclick="removePlayer(${idx})" class="text-rose-500 hover:text-rose-400 text-xs font-semibold">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function addPlayer() {
+            const input = document.getElementById('player-name-input');
+            const rawText = input.value.trim();
+            if (!rawText) return;
+
+            let rawLines = rawText.split(/[\n,]+/);
+            rawLines.forEach(line => {
+                let cleanName = line.trim();
+                cleanName = cleanName.replace(/^[\d\.\-\)\s]+/, '').trim();
+                if (cleanName.length > 0) globalPlayers.push(cleanName);
+            });
+
+            input.value = '';
+            renderPlayerList();
+        }
+
+        function removePlayer(index) {
+            globalPlayers.splice(index, 1);
+            renderPlayerList();
+        }
+
+        function clearRoster() { globalPlayers = []; renderPlayerList(); }
+
+        function loadSamplePlayers(count) {
+            const allSamples = [
+                "Elena Rostova", "Marcus Vance", "Kenji Tanaka", "Chloe Dubois", "Mateo Gomez", "Amara Okafor", 
+                "Liam Gallagher", "Sofia Rossi", "Andrej Novak", "Zara Haddad", "Julian Mercer", "Anya Kuznetsov", 
+                "Diego Alvarez", "Freya Lindstrom", "Tariq Al-Mansoor", "Yuki Sato", "Oliver Brooks", "Isabelle Laurent", 
+                "Rohan Mehta", "Camila Silva", "Lucas Fischer", "Nina Patel", "Christian Ward", "Carmen Vega", 
+                "Søren Nielsen", "Naomi Johnson", "Adrian Dumitru", "Fiona Gallagher", "Malik Jackson", "Elif Yilmaz", 
+                "Sebastian Cross", "Maya Lin"
+            ];
+            globalPlayers = allSamples.slice(0, count);
+            renderPlayerList();
+        }
+
+        function generatePIN() { return Math.random().toString(36).substring(2, 6).toUpperCase(); }
+
+        // 3. LAUNCH TOURNAMENT OPERATIONS
+        function generateTournament() {
+            if (globalPlayers.length < 2) {
+                alert("You need at least 2 competitors registered to run tournament operations.");
+                return;
+            }
+
+            // Sync values from configuration system inputs
+            activeRules.gamesToWin = parseInt(document.getElementById('rule-set-type').value);
+            activeRules.thirdSetType = document.getElementById('rule-third-set').value;
+            activeRules.tbPointsTarget = parseInt(document.getElementById('rule-tb-points').value);
+
+            // Dynamically alter sidebar Set 3 form headers text based on the choice
+            document.getElementById('header-set3').innerText = activeRules.thirdSetType === 'match-tb' ? 'Match TB' : 'Set 3';
+
+            activeFormatMode = document.querySelector('input[name="tournament-format"]:checked').value;
+            let shuffled = [...globalPlayers].sort(() => Math.random() - 0.5);
+            activeMatches = {}; 
+
+            document.getElementById('sec-setup').classList.add('hidden');
+            document.getElementById('tournament-workspace').classList.remove('hidden');
+            document.getElementById('active-view-indicator').classList.remove('hidden');
+
+            // Reset inputs formatting elements
+            document.getElementById('form-match-label').innerText = "No match target selected...";
+            document.getElementById('input-match-id').value = "";
+            resetScoreInputs();
+
+            if (activeFormatMode === 'bracket') {
+                document.getElementById('sec-bracket').classList.remove('hidden');
+                document.getElementById('sec-league').classList.add('hidden');
+                buildBracketSystem(shuffled);
+            } else {
+                document.getElementById('sec-league').classList.remove('hidden');
+                document.getElementById('sec-bracket').classList.add('hidden');
+                buildLeagueSystem(shuffled);
+            }
+        }
+
+        function returnToSetup() {
+            document.getElementById('sec-setup').classList.remove('hidden');
+            document.getElementById('tournament-workspace').classList.add('hidden');
+            document.getElementById('active-view-indicator').classList.add('hidden');
+        }
+
+        function resetScoreInputs() {
+            ['p1-s1','p1-s2','p1-s3','p2-s1','p2-s2','p2-s3'].forEach(id => document.getElementById(id).value = 0);
+        }
+
+        // 4. GENERATE BRACKET DESIGN
+        function buildBracketSystem(players) {
+            const area = document.getElementById('bracket-render-area');
+            area.innerHTML = '';
+            
+            let powerOfTwo = 2;
+            while (powerOfTwo < players.length) { powerOfTwo *= 2; }
+            while (players.length < powerOfTwo) { players.push("BYE"); }
+
+            let roundHtml = `<div class="flex flex-col gap-6 min-w-[240px]"><div class="text-xs uppercase font-bold text-gray-500 tracking-wider mb-2">Round 1</div>`;
+
+            for (let i = 0; i < players.length; i += 2) {
+                const matchId = `B-1-${i/2}`;
+                const mPin = generatePIN();
+                activeMatches[matchId] = { p1: players[i], p2: players[i+1], pin: mPin, winner: null, type: 'bracket' };
+
+                const isBye = players[i+1] === "BYE";
+                if(isBye) activeMatches[matchId].winner = players[i];
+
+                roundHtml += `
+                    <div id="card-${matchId}" onclick="${isBye ? '' : `loadMatchToSidebar('${matchId}')`}" class="bg-gray-950 border ${isBye ? 'border-gray-800 opacity-40 cursor-default':'border-gray-800 hover:border-orange-500/50 cursor-pointer'} rounded-lg p-3 space-y-1 transition">
+                        <div class="flex justify-between text-sm"><span class="font-medium" id="${matchId}-p1-name">${players[i]}</span><span id="${matchId}-p1-sc" class="font-mono text-gray-400">${isBye? activeRules.gamesToWin :'-'}</span></div>
+                        <div class="flex justify-between text-sm border-t border-gray-900 pt-1"><span class="font-medium text-gray-400" id="${matchId}-p2-name">${players[i+1]}</span><span id="${matchId}-p2-sc" class="font-mono text-gray-400">${isBye?'0':'-'}</span></div>
+                        <div class="text-[10px] text-gray-500 flex justify-between pt-1"><span>Match #${matchId}</span> <span class="text-orange-400 font-mono font-bold">${isBye?'BYE AUTOMATIC':`PIN: ${mPin}`}</span></div>
+                    </div>`;
+            }
+            roundHtml += `</div>`;
+            area.innerHTML = roundHtml;
+
+            let currentRoundSize = powerOfTwo / 4;
+            let roundNum = 2;
+            while(currentRoundSize >= 1) {
+                let blankRoundHtml = `<div class="flex flex-col gap-12 min-w-[240px] justify-around h-full"><div class="text-xs uppercase font-bold text-gray-500 tracking-wider mb-2">Round ${roundNum}</div>`;
+                for(let i=0; i < currentRoundSize; i++) {
+                    const matchId = `B-${roundNum}-${i}`;
+                    activeMatches[matchId] = { p1: "TBD", p2: "TBD", pin: generatePIN(), winner: null, type: 'bracket' };
+                    blankRoundHtml += `
+                        <div id="card-${matchId}" class="bg-gray-950 border border-gray-900 rounded-lg p-3 space-y-1 opacity-50">
+                            <div class="flex justify-between text-sm"><span class="text-gray-500" id="${matchId}-p1-name">TBD</span><span id="${matchId}-p1-sc" class="font-mono text-gray-500">-</span></div>
+                            <div class="flex justify-between text-sm border-t border-gray-900 pt-1"><span class="text-gray-500" id="${matchId}-p2-name">TBD</span><span id="${matchId}-p2-sc" class="font-mono text-gray-500">-</span></div>
+                            <div class="text-[10px] text-gray-500">Match #${matchId}</div>
+                        </div>`;
+                }
+                blankRoundHtml += '</div>';
+                area.innerHTML += blankRoundHtml;
+                roundNum++;
+                currentRoundSize /= 2;
+            }
+
+            for (let id in activeMatches) {
+                if(activeMatches[id].winner && id.startsWith("B-1-")) {
+                    advanceBracketTree(id, activeMatches[id].winner, `${activeRules.gamesToWin}-0`);
+                }
+            }
+        }
+
+        // 5. GENERATE LEAGUE ENGINE
+        function buildLeagueSystem(players) {
+            if (players.length % 2 !== 0) { players.push("BYE"); }
+            const n = players.length;
+            leagueStandings = {};
+            
+            const thRow = document.getElementById('league-th-row');
+            if (activeFormatMode === 'league-winloss') {
+                document.getElementById('league-title-header').innerText = "Round Robin (Win / Loss Format)";
+                document.getElementById('league-desc-header').innerText = `Matches played to ${activeRules.gamesToWin} games. Ranked by total wins.`;
+                thRow.innerHTML = `<th class="p-3 pl-4">Player</th><th class="p-3 text-center">Played</th><th class="p-3 text-center text-emerald-400">Wins</th><th class="p-3 text-center text-rose-400">Losses</th>`;
+                players.forEach(p => { if(p !== "BYE") leagueStandings[p] = { played: 0, won: 0, lost: 0 }; });
+            } else {
+                document.getElementById('league-title-header').innerText = "Grand Prix Points Accumulation League";
+                document.getElementById('league-desc-header').innerText = `Straight Win (2-0) = 3pts • Tiebreak Win (2-1) = 2pts • Tiebreak Loss (1-2) = 1pt • Straight Loss = 0pts`;
+                thRow.innerHTML = `<th class="p-3 pl-4">Player</th><th class="p-3 text-center">Played</th><th class="p-3 text-center text-emerald-400">Wins</th><th class="p-3 text-center text-rose-400">Losses</th><th class="p-3 text-right pr-4 text-orange-400">Total Points</th>`;
+                players.forEach(p => { if(p !== "BYE") leagueStandings[p] = { played: 0, won: 0, lost: 0, points: 0 }; });
+            }
+
+            const fixturesArea = document.getElementById('league-fixtures-area');
+            fixturesArea.innerHTML = '';
+
+            let matchIndex = 1;
+            for (let round = 0; round < n - 1; round++) {
+                for (let i = 0; i < n / 2; i++) {
+                    const p1 = players[i];
+                    const p2 = players[n - 1 - i];
+
+                    if (p1 !== "BYE" && p2 !== "BYE") {
+                        const matchId = `L-${matchIndex}`;
+                        const mPin = generatePIN();
+                        activeMatches[matchId] = { p1: p1, p2: p2, pin: mPin, winner: null, type: 'league' };
+
+                        fixturesArea.innerHTML += `
+                            <div id="card-${matchId}" onclick="loadMatchToSidebar('${matchId}')" class="bg-gray-950 border border-gray-800 hover:border-orange-500/40 rounded-lg p-3 space-y-2 cursor-pointer transition">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="font-medium text-white" id="${matchId}-p1-name">${p1}</span>
+                                    <span class="font-mono text-gray-400" id="${matchId}-p1-sc">-</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm border-t border-gray-900 pt-1">
+                                    <span class="font-medium text-gray-400" id="${matchId}-p2-name">${p2}</span>
+                                    <span class="font-mono text-gray-400" id="${matchId}-p2-sc">-</span>
+                                </div>
+                                <div class="text-[10px] text-gray-500 flex justify-between pt-1">
+                                    <span>Fixture #${matchId} • Round ${round+1}</span>
+                                    <span class="text-orange-400 font-mono font-bold">PIN: ${mPin}</span>
+                                </div>
+                            </div>`;
+                        matchIndex++;
+                    }
+                }
+                players.splice(1, 0, players.pop());
+            }
+            renderLeagueTable();
+        }
+
+        function renderLeagueTable() {
+            const tbody = document.getElementById('league-leaderboard-body');
+            if (activeFormatMode === 'league-winloss') {
+                tbody.innerHTML = Object.keys(leagueStandings)
+                    .map(p => ({ name: p, ...leagueStandings[p] }))
+                    .sort((a,b) => b.won - a.won)
+                    .map(p => `
+                        <tr class="hover:bg-gray-800/10">
+                            <td class="p-3 pl-4 font-semibold text-white">${p.name}</td>
+                            <td class="p-3 text-center font-mono text-gray-400">${p.played}</td>
+                            <td class="p-3 text-center text-emerald-400 font-mono font-bold">${p.won}</td>
+                            <td class="p-3 text-center text-rose-400 font-mono text-gray-400">${p.lost}</td>
+                        </tr>`).join('');
+            } else {
+                tbody.innerHTML = Object.keys(leagueStandings)
+                    .map(p => ({ name: p, ...leagueStandings[p] }))
+                    .sort((a,b) => b.points - a.points || b.won - a.won)
+                    .map(p => `
+                        <tr class="hover:bg-gray-800/10">
+                            <td class="p-3 pl-4 font-semibold text-white">${p.name}</td>
+                            <td class="p-3 text-center font-mono text-gray-400">${p.played}</td>
+                            <td class="p-3 text-center text-emerald-400 font-mono">${p.won}</td>
+                            <td class="p-3 text-center text-rose-400 font-mono">${p.lost}</td>
+                            <td class="p-3 text-right pr-4 text-orange-400 font-mono font-black text-base">${p.points}</td>
+                        </tr>`).join('');
+            }
+        }
+
+        function loadMatchToSidebar(matchId) {
+            const m = activeMatches[matchId];
+            if(m.winner) return;
+
+            document.getElementById('input-match-id').value = matchId;
+            document.getElementById('form-match-label').innerHTML = `<span class="text-orange-500 font-bold">#${matchId}</span>: ${m.p1} vs ${m.p2}`;
+            document.getElementById('label-p1').innerText = m.p1;
+            document.getElementById('label-p2').innerText = m.p2;
+            
+            document.getElementById('input-pin').value = '';
+            document.getElementById('feedback-msg').classList.add('hidden');
+            resetScoreInputs();
+        }
+
+        // 6. TENNIS LOGIC ENGINE VALIDATION RULES
+        function processScoreSubmission() {
+            const id = document.getElementById('input-match-id').value;
+            const enteredPin = document.getElementById('input-pin').value.trim().toUpperCase();
+            
+            if(!id) return alert("Select a match card first.");
+            const m = activeMatches[id];
+
+            if(enteredPin !== m.pin) {
+                showFeedback("Access Denied: Invalid Security Pin.", "text-rose-500");
+                return;
+            }
+
+            const p1_s1 = parseInt(document.getElementById('p1-s1').value) || 0;
+            const p1_s2 = parseInt(document.getElementById('p1-s2').value) || 0;
+            const p1_s3 = parseInt(document.getElementById('p1-s3').value) || 0;
+
+            const p2_s1 = parseInt(document.getElementById('p2-s1').value) || 0;
+            const p2_s2 = parseInt(document.getElementById('p2-s2').value) || 0;
+            const p2_s3 = parseInt(document.getElementById('p2-s3').value) || 0;
+
+            // Compute Winners per set block based on global match guidelines chosen
+            let p1SetsWon = 0;
+            let p2SetsWon = 0;
+
+            // Set 1 Checker
+            if (p1_s1 > p2_s1) p1SetsWon++; else if (p2_s1 > p1_s1) p2SetsWon++;
+            else { showFeedback("Sets cannot be tied. Enter tiebreak game score results.", "text-yellow-400"); return; }
+
+            // Set 2 Checker
+            if (p1_s2 > p2_s2) p1SetsWon++; else if (p2_s2 > p1_s2) p2SetsWon++;
+            else { showFeedback("Sets cannot be tied. Enter tiebreak game score results.", "text-yellow-400"); return; }
+
+            // Split Sets Verification Handler Block
+            if (p1SetsWon === 1 && p2SetsWon === 1) {
+                if (p1_s3 === 0 && p2_s3 === 0) {
+                    showFeedback(`Match Split 1-1! You must enter scores for the deciding ${activeRules.thirdSetType === 'match-tb' ? 'Match Tiebreak' : 'Third Set'}.`, "text-yellow-400");
+                    return;
+                }
+                if (p1_s3 > p2_s3) p1SetsWon++; else if (p2_s3 > p1_s3) p2SetsWon++;
+                else { showFeedback("Deciding sets must have a distinct winner.", "text-yellow-400"); return; }
+            } else {
+                // If a player won 2-0, check to make sure they didn't accidentally type scores into Set 3
+                if (p1_s3 > 0 || p2_s3 > 0) {
+                    showFeedback("Invalid score: Straight-set victories cannot have a third set score recorded.", "text-yellow-400");
+                    return;
+                }
+            }
+
+            let winner = (p1SetsWon > p2SetsWon) ? m.p1 : m.p2;
+            let loser = (p1SetsWon > p2SetsWon) ? m.p2 : m.p1;
+            m.winner = winner;
+
+            // String formatter builder 
+            let p1String = `${p1_s1}-${p1_s2}${p1_s3 > 0 || p2_s3 > 0 ? ` [${p1_s3}]` : ''}`;
+            let p2String = `${p2_s1}-${p2_s2}${p1_s3 > 0 || p2_s3 > 0 ? ` [${p2_s3}]` : ''}`;
+
+            document.getElementById(`${id}-p1-sc`).innerText = p1String;
+            document.getElementById(`${id}-p2-sc`).innerText = p2String;
+            document.getElementById(`card-${id}`).className = "bg-gray-900 border border-emerald-500/30 rounded-lg p-3 space-y-1 opacity-60 cursor-default";
+
+            showFeedback("Score successfully calculated, verified, and committed.", "text-emerald-400");
+
+            if(m.type === 'bracket') {
+                advanceBracketTree(id, winner, (p1SetsWon > p2SetsWon) ? p1String : p2String);
+            } else {
+                leagueStandings[winner].played++; leagueStandings[winner].won++;
+                leagueStandings[loser].played++; leagueStandings[loser].lost++;
+                
+                if (activeFormatMode === 'league-points') {
+                    let winnerSets = Math.max(p1SetsWon, p2SetsWon);
+                    let loserSets = Math.min(p1SetsWon, p2SetsWon);
+                    if (winnerSets === 2 && loserSets === 0) {
+                        leagueStandings[winner].points += 3; 
+                    } else {
+                        leagueStandings[winner].points += 2; 
+                        leagueStandings[loser].points += 1;  
+                    }
+                }
+                renderLeagueTable();
+            }
+        }
+
+        function advanceBracketTree(matchId, winnerName, scoreText) {
+            const parts = matchId.split('-');
+            const r = parseInt(parts[1]);
+            const mIdx = parseInt(parts[2]);
+
+            const nextRoundId = `B-${r+1}-${Math.floor(mIdx / 2)}`;
+            const nextMatch = activeMatches[nextRoundId];
+
+            if(nextMatch) {
+                const card = document.getElementById(`card-${nextRoundId}`);
+                card.classList.remove('opacity-50');
+                card.classList.add('hover:border-orange-500/50', 'cursor-pointer');
+                
+                if(mIdx % 2 === 0) {
+                    nextMatch.p1 = winnerName;
+                    document.getElementById(`${nextRoundId}-p1-name`).innerText = winnerName;
+                    document.getElementById(`${nextRoundId}-p1-name`).className = "font-medium text-white";
+                } else {
+                    nextMatch.p2 = winnerName;
+                    document.getElementById(`${nextRoundId}-p2-name`).innerText = winnerName;
+                    document.getElementById(`${nextRoundId}-p2-name`).className = "font-medium text-white";
+                }
+                card.setAttribute("onclick", `loadMatchToSidebar('${nextRoundId}')`);
+            }
+        }
+
+        function showFeedback(text, color) {
+            const el = document.getElementById('feedback-msg');
+            el.innerText = text; el.className = `text-xs text-center font-medium mt-2 ${color}`;
+            el.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
