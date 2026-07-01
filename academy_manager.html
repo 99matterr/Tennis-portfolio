@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchpoint - Academy Manager OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #060913; color: #f3f4f6; }
+        .sidebar-glow { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen pb-12">
+
+    <!-- PLATFORM HEADER & EXPANDED MENU NAVIGATION -->
+    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 text-white p-2 rounded-lg font-black tracking-tighter text-xl">AM</div>
+            <h1 class="text-xl font-bold tracking-tight text-white">MATCHPOINT <span class="text-blue-500 font-medium text-sm border border-blue-500/30 px-2 py-0.5 rounded ml-2">ACADEMY OS</span></h1>
+        </div>
+        
+        <!-- EXPANDED MULTI-ROLE INTUITIVE MENU -->
+        <nav class="flex flex-wrap bg-gray-950 p-1 rounded-lg border border-gray-800 text-xs gap-1">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3.5 py-2 rounded-md font-semibold transition bg-blue-600 text-white">📋 Live Operations</button>
+            <button onclick="switchTab('roster')" id="tab-roster" class="px-3.5 py-2 rounded-md font-semibold transition text-gray-400 hover:text-white">👥 Student Roster</button>
+            <button onclick="switchTab('register')" id="tab-register" class="px-3.5 py-2 rounded-md font-semibold transition text-gray-400 hover:text-white">🖋️ Registration & Bookings</button>
+            <button onclick="switchTab('analytics')" id="tab-analytics" class="px-3.5 py-2 rounded-md font-semibold transition text-gray-400 hover:text-white">📊 Performance Tracking</button>
+        </nav>
+    </header>
+
+    <!-- MAIN PLATFORM HUB -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        
+        <!-- OPERATIONAL METRIC METERS BAR -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gray-900/40 border border-gray-800/80 p-4 rounded-xl">
+                <span class="text-[11px] text-gray-500 uppercase font-bold tracking-wider">Court Utilization</span>
+                <span class="block text-2xl font-black text-white mt-1">75% <span class="text-xs text-emerald-400 font-normal ml-1">3/4 Active</span></span>
+            </div>
+            <div class="bg-gray-900/40 border border-gray-800/80 p-4 rounded-xl">
+                <span class="text-[11px] text-gray-500 uppercase font-bold tracking-wider">Today's Check-Ins</span>
+                <span id="stat-checkins" class="block text-2xl font-black text-blue-400 mt-1">0 / 11</span>
+            </div>
+            <div class="bg-gray-900/40 border border-gray-800/80 p-4 rounded-xl">
+                <span class="text-[11px] text-gray-500 uppercase font-bold tracking-wider">Active Staff On-Court</span>
+                <span class="block text-2xl font-black text-white mt-1">3 Coaches</span>
+            </div>
+            <div class="bg-gray-900/40 border border-gray-800/80 p-4 rounded-xl">
+                <span class="text-[11px] text-gray-500 uppercase font-bold tracking-wider">Roster Size</span>
+                <span id="stat-roster-count" class="block text-2xl font-black text-amber-500 mt-1">11 Players</span>
+            </div>
+        </div>
+
+        <!-- TAB 1: LIVE OPERATIONS (COACH/MANAGER COURT BOARD) -->
+        <div id="view-dashboard" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="bg-gray-900/40 border border-gray-800 rounded-xl p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-md font-bold text-white">Live Master Court Schedule</h2>
+                            <p class="text-xs text-gray-400">Click an active court card to launch the coach check-in clipboard.</p>
+                        </div>
+                        <span class="text-xs font-mono text-gray-400 bg-gray-950 px-3 py-1 rounded-md border border-gray-800">Time Block: 4:00 PM - 5:30 PM</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div onclick="loadCourtClipboard(1)" id="court-card-1" class="bg-gray-950 border border-blue-500/30 hover:border-blue-500 rounded-xl p-4 cursor-pointer transition relative">
+                            <span class="absolute top-3 right-3 text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded">CLINIC ACTIVE</span>
+                            <h3 class="text-sm font-black text-white tracking-wide">COURT 1 (Hard Court)</h3>
+                            <div class="mt-3 space-y-1 text-xs text-gray-400">
+                                <div><span class="text-gray-500 font-medium">Program:</span> High-Performance Juniors</div>
+                                <div><span class="text-gray-500 font-medium">Head Coach:</span> Coach Carlos</div>
+                                <div><span class="text-gray-500 font-medium">Roster Capacity:</span> 4 Players Assigned</div>
+                            </div>
+                        </div>
+
+                        <div onclick="loadCourtClipboard(2)" id="court-card-2" class="bg-gray-950 border border-blue-500/30 hover:border-blue-500 rounded-xl p-4 cursor-pointer transition relative">
+                            <span class="absolute top-3 right-3 text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded">LESSON ACTIVE</span>
+                            <h3 class="text-sm font-black text-white tracking-wide">COURT 2 (Clay Court)</h3>
+                            <div class="mt-3 space-y-1 text-xs text-gray-400">
+                                <div><span class="text-gray-500 font-medium">Program:</span> Private Match Strategy</div>
+                                <div><span class="text-gray-500 font-medium">Head Coach:</span> Coach Amara</div>
+                                <div><span class="text-gray-500 font-medium">Roster Capacity:</span> 1 Player Assigned</div>
+                            </div>
+                        </div>
+
+                        <div onclick="loadCourtClipboard(3)" id="court-card-3" class="bg-gray-950 border border-blue-500/30 hover:border-blue-500 rounded-xl p-4 cursor-pointer transition relative">
+                            <span class="absolute top-3 right-3 text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded">CLINIC ACTIVE</span>
+                            <h3 class="text-sm font-black text-white tracking-wide">COURT 3 (Hard Court)</h3>
+                            <div class="mt-3 space-y-1 text-xs text-gray-400">
+                                <div><span class="text-gray-500 font-medium">Program:</span> Adult Intermediate Drills</div>
+                                <div><span class="text-gray-500 font-medium">Head Coach:</span> Coach Kenji</div>
+                                <div><span class="text-gray-500 font-medium">Roster Capacity:</span> <span id="court-3-capacity-label">6</span> Players Assigned</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-900/20 border border-gray-800/60 rounded-xl p-4 opacity-50 relative cursor-not-allowed">
+                            <span class="absolute top-3 right-3 text-[10px] font-mono font-bold bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded">OPEN / VACANT</span>
+                            <h3 class="text-sm font-bold text-gray-500">COURT 4 (Hard Court)</h3>
+                            <div class="mt-3 space-y-1 text-xs text-gray-600">
+                                <div>No scheduled lessons active. Open for member rentals.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-glow rounded-xl">
+                <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 h-fit sticky top-24 space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2 uppercase tracking-wider">
+                            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                            On-Court Attendance Gate
+                        </h3>
+                    </div>
+                    <div class="border-t border-gray-800 pt-3 space-y-4">
+                        <div>
+                            <span class="block text-[10px] text-gray-500 uppercase font-bold tracking-wide">Selected Location Target</span>
+                            <div id="clipboard-court-title" class="bg-gray-950 border border-gray-800 text-sm text-gray-400 italic rounded-lg p-3 mt-1">Tap an active court board to load its digital clipboard roster sheet...</div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="block text-[10px] text-gray-500 uppercase font-bold tracking-wide">Roster Gate Log Check-In</span>
+                            <div id="clipboard-student-rows" class="space-y-1 divide-y divide-gray-900 max-h-[250px] overflow-y-auto">
+                                <div class="text-xs text-gray-600 italic text-center py-4">No active roster targets loaded yet.</div>
+                            </div>
+                        </div>
+                        <button onclick="commitAttendance()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-2.5 rounded-lg text-xs tracking-wider uppercase transition">Commit Session Log</button>
+                        <div id="clipboard-feedback" class="text-xs font-semibold text-center hidden text-emerald-400">Log synchronized successfully!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ACADEMY STUDENT ROSTER DIRECTORY -->
+        <div id="view-roster" class="bg-gray-900/40 border border-gray-800 rounded-xl p-5 hidden">
+            <div class="mb-4">
+                <h2 class="text-md font-bold text-white">Academy Student Roster Directory</h2>
+                <p class="text-xs text-gray-400">Master database monitoring current performance tiers and emergency parent profiles.</p>
+            </div>
+            <div class="overflow-x-auto border border-gray-800 rounded-xl bg-gray-950/40">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-gray-400 font-medium bg-gray-950/80">
+                            <th class="p-3 pl-4">Student Name</th>
+                            <th class="p-3">Skill Group Tier</th>
+                            <th class="p-3 text-center">NTRP / Rating</th>
+                            <th class="p-3">Primary Contact Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roster-table-body" class="divide-y divide-gray-800/60 text-gray-300"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: NEW STUDENT REGISTRATION & BOOKING ENGINE -->
+        <div id="view-register" class="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
+            <div class="bg-gray-900/40 border border-gray-800 rounded-xl p-5 h-fit space-y-4">
+                <div>
+                    <h2 class="text-md font-bold text-white">🖋️ New Student Intake</h2>
+                    <p class="text-xs text-gray-400">Register new players or assign them to clinics instantly.</p>
+                </div>
+                <div class="space-y-3 text-xs border-t border-gray-800 pt-4">
+                    <div>
+                        <label class="block text-gray-400 font-medium mb-1">Full Name</label>
+                        <input type="text" id="reg-name" placeholder="e.g. Gabriel Vasquez" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 font-medium mb-1">Contact Email</label>
+                        <input type="email" id="reg-email" placeholder="parent@mail.com" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-gray-400 font-medium mb-1">Skill Tier Assignment</label>
+                            <select id="reg-tier" class="w-full bg-gray-950 border border-gray-800 text-gray-300 p-2.5 rounded-lg focus:border-blue-500 focus:outline-none">
+                                <option value="High Performance">High Performance</option>
+                                <option value="Adult Intermediate">Adult Intermediate</option>
+                                <option value="Private Track">Private Track</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 font-medium mb-1">Estimated Rating</label>
+                            <input type="text" id="reg-rating" placeholder="e.g. 4.5 UTR" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 font-medium mb-1">Assign to Live Court Class</label>
+                        <select id="reg-court-assign" class="w-full bg-gray-950 border border-gray-800 text-gray-300 p-2.5 rounded-lg focus:border-blue-500 focus:outline-none">
+                            <option value="none">Roster Only (No Class Assignment)</option>
+                            <option value="1">Court 1 - High-Performance Juniors</option>
+                            <option value="2">Court 2 - Private Match Strategy</option>
+                            <option value="3">Court 3 - Adult Intermediate Drills</option>
+                        </select>
+                    </div>
+                    <button onclick="submitNewRegistration()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg transition mt-2">Complete Academy Intake</button>
+                </div>
+            </div>
+
+            <!-- Program Catalog Board Summary -->
+            <div class="lg:col-span-2 bg-gray-900/40 border border-gray-800 rounded-xl p-5 space-y-4">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">Active Academy Clinic Framework</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl space-y-2">
+                        <span class="text-blue-400 font-bold uppercase tracking-wider text-[10px]">Junior Academy</span>
+                        <h4 class="text-sm font-bold text-white">High-Performance Training Elite</h4>
+                        <p class="text-gray-400">Intense match simulation drills focusing on dynamic biomechanics and tactical patterns.</p>
+                        <div class="text-gray-500 font-mono text-[11px]">Schedule: Mon/Tue/Thu 4:00 PM</div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl space-y-2">
+                        <span class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Adult Programs</span>
+                        <h4 class="text-sm font-bold text-white">Intermediate Strategy Drills</h4>
+                        <p class="text-gray-400">Stroke consistency drills, live-ball doubles positioning drills, and tactical spacing rules.</p>
+                        <div class="text-gray-500 font-mono text-[11px]">Schedule: Every Wednesday 4:00 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: PLAYER PERFORMANCE EVALUATIONS / ANALYTICS -->
+        <div id="view-analytics" class="bg-gray-900/40 border border-gray-800 rounded-xl p-5 hidden space-y-6">
+            <div>
+                <h2 class="text-md font-bold text-white">📊 Academy Player Evaluations Portal</h2>
+                <p class="text-xs text-gray-400">Coaches can audit technical development tiers, and players can view progress reports.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Dropdown selector tool -->
+                <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl h-fit space-y-3">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide">Select Student Analytics File</label>
+                    <select id="analytics-student-picker" onchange="renderStudentReportCard()" class="w-full bg-gray-900 border border-gray-800 text-sm text-white p-2 rounded-lg focus:border-blue-500 focus:outline-none"></select>
+                </div>
+
+                <!-- Live Report Card Sheet -->
+                <div id="report-card-card" class="md:col-span-2 bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-6">
+                    <div class="flex justify-between items-start border-b border-gray-800 pb-4">
+                        <div>
+                            <h3 id="report-student-name" class="text-lg font-black text-white">Select a Player</h3>
+                            <span id="report-student-tier" class="text-xs text-blue-400">Academy Track File</span>
+                        </div>
+                        <span class="text-xs bg-blue-500/10 border border-blue-500/30 text-blue-400 font-mono px-3 py-1 rounded-md">Status: Active</span>
+                    </div>
+
+                    <!-- Evaluation progress bars metric grid elements -->
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-gray-400 mb-1"><span>Forehand Consistency</span><span id="score-fh" class="text-white font-mono font-bold">-/10</span></div>
+                            <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden"><div id="bar-fh" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-gray-400 mb-1"><span>Backhand Depth Technical</span><span id="score-bh" class="text-white font-mono font-bold">-/10</span></div>
+                            <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden"><div id="bar-bh" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-gray-400 mb-1"><span>Serve Mechanics / Accuracy</span><span id="score-srv" class="text-white font-mono font-bold">-/10</span></div>
+                            <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden"><div id="bar-srv" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-gray-400 mb-1"><span>Court Movement / Footwork</span><span id="score-ft" class="text-white font-mono font-bold">-/10</span></div>
+                            <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden"><div id="bar-ft" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // CENTRAL DATABASE CONTEXT DATA
+        const academyDatabase = {
+            students: {
+                1: { name: "Elena Rostova", tier: "High Performance", rating: "4.5 UTR", email: "rostova.parent@mail.com", skills: {fh:8, bh:7, srv:9, ft:8} },
+                2: { name: "Marcus Vance", tier: "High Performance", rating: "5.0 UTR", email: "vance.family@web.net", skills: {fh:9, bh:8, srv:7, ft:9} },
+                3: { name: "Kenji Tanaka", tier: "High Performance", rating: "4.0 UTR", email: "tanaka.office@tech.org", skills: {fh:7, bh:7, srv:6, ft:8} },
+                4: { name: "Chloe Dubois", tier: "High Performance", rating: "4.5 UTR", email: "dubois.chloe@euro.fr", skills: {fh:8, bh:9, srv:7, ft:7} },
+                5: { name: "Mateo Gomez", tier: "Private Track", rating: "3.5 NTRP", email: "gomez.mg@tennis.com", skills: {fh:6, bh:5, srv:6, ft:6} },
+                6: { name: "Liam Gallagher", tier: "Adult Intermediate", rating: "3.0 NTRP", email: "liam.g@rock.co.uk", skills: {fh:5, bh:4, srv:5, ft:6} },
+                7: { name: "Sofia Rossi", tier: "Adult Intermediate", rating: "3.5 NTRP", email: "rossi.sofia@design.it", skills: {fh:6, bh:6, srv:6, ft:5} },
+                8: { name: "Andrej Novak", tier: "Adult Intermediate", rating: "3.0 NTRP", email: "novak.a@academy.cz", skills: {fh:5, bh:5, srv:4, ft:5} },
+                9: { name: "Zara Haddad", tier: "Adult Intermediate", rating: "3.5 NTRP", email: "haddad.zara@global.com", skills: {fh:7, bh:6, srv:5, ft:6} },
+                10: { name: "Julian Mercer", tier: "Adult Intermediate", rating: "3.0 NTRP", email: "mercer.j@finance.net", skills: {fh:4, bh:5, srv:6, ft:4} },
+                11: { name: "Anya Kuznetsov", tier: "Adult Intermediate", rating: "3.5 NTRP", email: "anya.k@sports.ru", skills: {fh:6, bh:7, srv:5, ft:6} }
+            },
+            courtAssignments: {
+                1: { title: "Court 1 Clinic", program: "High-Performance Juniors", coach: "Coach Carlos", players: [1, 2, 3, 4] },
+                2: { title: "Court 2 Private", program: "Private Match Strategy", coach: "Coach Amara", players: [5] },
+                3: { title: "Court 3 Clinic", program: "Adult Intermediate Drills", coach: "Coach Kenji", players: [6, 7, 8, 9, 10, 11] }
+            },
+            attendanceLogs: {} 
+        };
+
+        let currentActiveCourtId = null;
+
+        window.onload = function() {
+            renderRosterDirectory();
+            calculateCheckInStats();
+            populateAnalyticsDropdown();
+            renderStudentReportCard();
+        };
+
+        // MULTI-TAB VIEW ROUTER ENGINE
+        function switchTab(targetView) {
+            ['dashboard', 'roster', 'register', 'analytics'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                document.getElementById(`tab-${v}`).className = "px-3.5 py-2 rounded-md font-semibold transition text-gray-400 hover:text-white";
+            });
+            document.getElementById(`view-${targetView}`).classList.remove('hidden');
+            document.getElementById(`tab-${targetView}`).className = "px-3.5 py-2 rounded-md font-semibold transition bg-blue-600 text-white";
+        }
+
+        // INTENSIVE ACTION: SUBMIT INTAKE REGISTRATION
+        function submitNewRegistration() {
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const tier = document.getElementById('reg-tier').value;
+            const rating = document.getElementById('reg-rating').value.trim() || "3.5 NTRP";
+            const courtId = document.getElementById('reg-court-assign').value;
+
+            if(!name || !email) return alert("Please fill out Name and Email properties to complete profile entry.");
+
+            // Add player to local memory sheet
+            const nextId = Object.keys(academyDatabase.students).length + 1;
+            academyDatabase.students[nextId] = {
+                name: name, tier: tier, rating: rating, email: email,
+                skills: { fh: 5, bh: 5, srv: 5, ft: 5 } // Set defaults
+            };
+
+            // Push context to active schedules if demanded
+            if(courtId !== "none") {
+                academyDatabase.courtAssignments[courtId].players.push(nextId);
+                document.getElementById('court-3-capacity-label').innerText = academyDatabase.courtAssignments[3].players.length; 
+            }
+
+            // Sync visual instances across layout frameworks
+            renderRosterDirectory();
+            calculateCheckInStats();
+            populateAnalyticsDropdown();
+            
+            // Clean sheet inputs
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-email').value = '';
+            
+            alert(`Academy Intake Success! ${name} has been added to the master systems.`);
+            switchTab('roster');
+        }
+
+        // RENDER MASTER ROSTER SHEET
+        function renderRosterDirectory() {
+            const tbody = document.getElementById('roster-table-body');
+            tbody.innerHTML = Object.keys(academyDatabase.students).map(id => {
+                const s = academyDatabase.students[id];
+                return `
+                    <tr class="hover:bg-gray-800/10">
+                        <td class="p-3 pl-4 font-bold text-white">${s.name}</td>
+                        <td class="p-3 text-xs text-gray-400"><span class="bg-gray-900 border border-gray-800 px-2.5 py-1 rounded-full">${s.tier}</span></td>
+                        <td class="p-3 text-center font-mono text-xs font-bold text-blue-400">${s.rating}</td>
+                        <td class="p-3 text-xs text-gray-400 font-mono">${s.email}</td>
+                    </tr>`;
+            }).join('');
+            document.getElementById('stat-roster-count').innerText = `${Object.keys(academyDatabase.students).length} Players`;
+        }
+
+        // DYNAMIC ATTENDANCE MECHANICS
+        function loadCourtClipboard(courtId) {
+            currentActiveCourtId = courtId;
+            const assignment = academyDatabase.courtAssignments[courtId];
+            
+            // Re-render display classes blocks
+            [1, 2, 3].forEach(id => document.getElementById(`court-card-${id}`).className = "bg-gray-950 border border-gray-800 hover:border-blue-500/50 rounded-xl p-4 cursor-pointer transition relative");
+            document.getElementById(`court-card-${courtId}`).className = "bg-gray-950 border-2 border-blue-500 rounded-xl p-4 cursor-pointer transition relative sidebar-glow";
+
+            document.getElementById('clipboard-court-title').innerHTML = `
+                <div class="text-white font-bold text-xs uppercase">${assignment.title}</div>
+                <div class="text-[11px] text-gray-400 mt-0.5">${assignment.program} • <span class="text-blue-400 font-medium">${assignment.coach}</span></div>`;
+
+            const rowsContainer = document.getElementById('clipboard-student-rows');
+            rowsContainer.innerHTML = assignment.players.map(studentId => {
+                const student = academyDatabase.students[studentId];
+                const isChecked = academyDatabase.attendanceLogs[courtId]?.includes(studentId) ? 'checked' : '';
+                return `
+                    <label class="flex justify-between items-center py-2.5 cursor-pointer hover:bg-gray-900/30 px-1 transition rounded">
+                        <span class="text-xs text-gray-200 font-medium">${student.name}</span>
+                        <input type="checkbox" value="${studentId}" ${isChecked} class="w-4 h-4 rounded accent-blue-600 bg-gray-950 border-gray-800 focus:ring-0">
+                    </label>`;
+            }).join('');
+            document.getElementById('clipboard-feedback').classList.add('hidden');
+        }
+
+        function commitAttendance() {
+            if(!currentActiveCourtId) return alert("Select an active court card location block first.");
+            const checkboxes = document.getElementById('clipboard-student-rows').querySelectorAll('input[type="checkbox"]');
+            
+            academyDatabase.attendanceLogs[currentActiveCourtId] = [];
+            checkboxes.forEach(cb => { if(cb.checked) academyDatabase.attendanceLogs[currentActiveCourtId].push(parseInt(cb.value)); });
+
+            document.getElementById('clipboard-feedback').classList.remove('hidden');
+            calculateCheckInStats();
+        }
+
+        function calculateCheckInStats() {
+            let total = 0, current = 0;
+            Object.keys(academyDatabase.courtAssignments).forEach(cId => total += academyDatabase.courtAssignments[cId].players.length);
+            Object.keys(academyDatabase.attendanceLogs).forEach(cId => current += academyDatabase.attendanceLogs[cId].length);
+            document.getElementById('stat-checkins').innerText = `${current} / ${total}`;
+        }
+
+        // EVALUATION PORTAL DATA POPULATOR
+        function populateAnalyticsDropdown() {
+            const picker = document.getElementById('analytics-student-picker');
+            picker.innerHTML = Object.keys(academyDatabase.students).map(id => `<option value="${id}">${academyDatabase.students[id].name}</option>`).join('');
+        }
+
+        function renderStudentReportCard() {
+            const id = document.getElementById('analytics-student-picker').value;
+            if(!id) return;
+            const s = academyDatabase.students[id];
+
+            document.getElementById('report-student-name').innerText = s.name;
+            document.getElementById('report-student-tier').innerText = `${s.tier} Profile Tier • ${s.rating}`;
+
+            // Map bar charts scores variables directly
+            ['fh', 'bh', 'srv', 'ft'].forEach(skill => {
+                const score = s.skills[skill];
+                document.getElementById(`score-${skill}`).innerText = `${score} / 10`;
+                document.getElementById(`bar-${skill}`).style.width = `${score * 10}%`;
+            });
+        }
+    </script>
+</body>
+</html>
