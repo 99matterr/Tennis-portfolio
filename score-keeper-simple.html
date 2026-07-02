@@ -70,6 +70,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
         .mode-btn.active {
@@ -318,6 +319,7 @@
     <div class="match-type-bar">
         <button class="mode-btn active" id="mode-singles" onclick="switchMatchMode('singles')">Singles</button>
         <button class="mode-btn" id="mode-doubles" onclick="switchMatchMode('doubles')">Doubles</button>
+        <button class="mode-btn" id="mode-noad" onclick="toggleNoAdMode()">Advantage</button>
     </div>
 
     <div class="set-game-row">
@@ -352,10 +354,8 @@
         </div>
     </div>
 
-    <!-- RESPONSIVE HORIZONTAL FLEX CONTAINER PLATFORM -->
     <div class="dashboard-main-body">
         
-        <!-- LEFT WING: TEAM 1 TRIGGERS -->
         <div class="side-action-panel left-side">
             <div class="team-section-title" id="card-t1-title">Team 1 Actions</div>
             <div class="player-action-card" id="card-p1a">
@@ -374,7 +374,6 @@
             </div>
         </div>
 
-        <!-- CENTER MATRIX: THE SCOREBOARD BLOCK -->
         <div class="main-display">
             <div class="score-block">
                 <div class="score-label" id="lbl-t1">Team 1</div>
@@ -386,7 +385,6 @@
             </div>
         </div>
 
-        <!-- RIGHT WING: TEAM 2 TRIGGERS -->
         <div class="side-action-panel right-side">
             <div class="team-section-title" id="card-t2-title">Team 2 Actions</div>
             <div class="player-action-card" id="card-p2a">
@@ -418,6 +416,7 @@
 
     let state = {
         matchMode: 'singles',
+        noAd: false,
         currentServer: 1, 
         scoreData: {
             t1: { points: 0, games: 0, sets: 0 },
@@ -474,6 +473,23 @@
         renderDisplay();
     }
 
+    function toggleNoAdMode() {
+        state.noAd = !state.noAd;
+        renderNoAdButton();
+        saveState();
+    }
+
+    function renderNoAdButton() {
+        const btn = document.getElementById('mode-noad');
+        if (state.noAd) {
+            btn.classList.add('active');
+            btn.innerText = "No-Ad";
+        } else {
+            btn.classList.remove('active');
+            btn.innerText = "Advantage";
+        }
+    }
+
     function setServerDirect(num) {
         state.currentServer = num;
         renderDisplay();
@@ -500,7 +516,20 @@
 
         scorer.points++;
 
-        if (scorer.points >= 4 && (scorer.points - opponent.points) >= 2) {
+        let gameWon = false;
+        if (state.noAd) {
+            // No-Ad rule: first to reach 4 points wins the game (sudden death at 3-3 / 40-40)
+            if (scorer.points >= 4) {
+                gameWon = true;
+            }
+        } else {
+            // Advantage rule: must win by 2 points once reaching 4 points
+            if (scorer.points >= 4 && (scorer.points - opponent.points) >= 2) {
+                gameWon = true;
+            }
+        }
+
+        if (gameWon) {
             scorer.games++;
             state.scoreData.t1.points = 0;
             state.scoreData.t2.points = 0;
@@ -511,7 +540,8 @@
                 state.scoreData.t1.games = 0;
                 state.scoreData.t2.games = 0;
             }
-        } else if (scorer.points >= 3 && opponent.points >= 3 && scorer.points === opponent.points) {
+        } else if (!state.noAd && scorer.points >= 3 && opponent.points >= 3 && scorer.points === opponent.points) {
+            // Revert back to baseline Deuce (40-40) only if advantage scoring is enabled
             state.scoreData.t1.points = 3;
             state.scoreData.t2.points = 3;
         }
@@ -544,7 +574,7 @@
         let t1Out = scoreMap[Math.min(state.scoreData.t1.points, 4)];
         let t2Out = scoreMap[Math.min(state.scoreData.t2.points, 4)];
 
-        if (state.scoreData.t1.points >= 3 && state.scoreData.t2.points >= 3) {
+        if (!state.noAd && state.scoreData.t1.points >= 3 && state.scoreData.t2.points >= 3) {
             if (state.scoreData.t1.points === state.scoreData.t2.points) { t1Out = "40"; t2Out = "40"; }
             else if (state.scoreData.t1.points > state.scoreData.t2.points) { t1Out = "A"; t2Out = "40"; }
             else { t1Out = "40"; t2Out = "A"; }
@@ -570,9 +600,12 @@
     const cache = localStorage.getItem(STORAGE_KEY);
     if (cache) {
         state = JSON.parse(cache);
+        if (state.noAd === undefined) state.noAd = false;
         switchMatchMode(state.matchMode);
+        renderNoAdButton();
     } else {
         switchMatchMode('singles');
+        renderNoAdButton();
     }
 </script>
 </body>
