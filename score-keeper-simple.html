@@ -32,7 +32,7 @@
         .tennis-app {
             background-color: var(--bg-card);
             width: 100%;
-            max-width: 950px; /* Expanded maximum width to hold wide desktop dashboard frames */
+            max-width: 950px;
             border-radius: 28px;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.04);
@@ -145,10 +145,9 @@
             font-size: 0.95rem;
         }
 
-        /* DYNAMIC HUB PLATFORM GRID WRAPPER */
         .dashboard-main-body {
             display: flex;
-            flex-direction: row; /* Horizontal alignment side-by-side on wide tablet interfaces */
+            flex-direction: row;
             background-color: #fafafa;
             border-bottom: 1px solid var(--border-color);
         }
@@ -163,13 +162,8 @@
             background-color: #ffffff;
         }
 
-        .side-action-panel.left-side {
-            border-right: 1px solid var(--border-color);
-        }
-
-        .side-action-panel.right-side {
-            border-left: 1px solid var(--border-color);
-        }
+        .side-action-panel.left-side { border-right: 1px solid var(--border-color); }
+        .side-action-panel.right-side { border-left: 1px solid var(--border-color); }
 
         .main-display {
             flex: 1.2;
@@ -220,10 +214,7 @@
             text-overflow: ellipsis;
         }
 
-        .action-buttons-container {
-            display: flex; 
-            gap: 6px;
-        }
+        .action-buttons-container { display: flex; gap: 6px; }
 
         .stat-trigger-btn {
             width: 100%;
@@ -237,13 +228,74 @@
             transition: opacity 0.15s ease;
         }
 
-        .stat-trigger-btn:hover {
-            opacity: 0.9;
-        }
-
+        .stat-trigger-btn:hover { opacity: 0.9; }
         .btn-win { background-color: var(--accent-blue); }
         .btn-err { background-color: var(--accent-red); }
 
+        /* VISUAL CHART GRAPH REGION STYLING */
+        .stats-container {
+            padding: 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chart-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 600px) {
+            .chart-layout-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .player-chart-card {
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .chart-player-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .graph-metric-row {
+            margin-bottom: 8px;
+        }
+
+        .graph-meta-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .bar-track {
+            background: #e8e8ed;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .bar-fill-indicator {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .bar-fill-indicator.win-fill { background-color: var(--accent-blue); }
+        .bar-fill-indicator.err-fill { background-color: var(--accent-red); }
+
+        /* UTILITY LAYOUT */
         .utility-container {
             padding: 20px 20px 0;
             display: flex;
@@ -263,48 +315,83 @@
             transition: all 0.2s ease;
         }
 
-        .action-btn:hover {
-            background: #f5f5f7;
-        }
+        .action-btn:hover { background: #f5f5f7; }
 
-        .action-btn.reset-btn {
-            background-color: #1d1d1f;
-            border-color: #1d1d1f;
+        .action-btn.view-btn {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
             color: #ffffff;
         }
 
-        .action-btn.reset-btn:hover {
-            background-color: #000000;
+        .action-btn.view-btn:hover { background-color: #0056b3; border-color: #0056b3; }
+        .action-btn.reset-btn { background-color: #1d1d1f; border-color: #1d1d1f; color: #ffffff; }
+        .action-btn.reset-btn:hover { background-color: #000000; }
+
+        /* OVERLAY REPORT MODAL STYLING */
+        .modal-overlay-frame {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.40);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
         }
 
-        /* ADAPTIVE MOBILE BREAKPOINT LAYOUT */
+        .modal-wrapper {
+            background: #ffffff;
+            border-radius: 24px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: modalPop 0.25s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .modal-title { font-weight: 700; font-size: 1.1rem; }
+        .close-modal-x { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+
+        .preview-scroll-pane {
+            background: #f5f5f7;
+            padding: 16px;
+            border-radius: 14px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            color: #333;
+        }
+
+        /* ADAPTIVE MOBILE LAYOUT BREAKPOINT */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .dashboard-main-body {
-                flex-direction: column; /* Collapses rows back into clean structural vertical lines on mobile ports */
-            }
-
-            .side-action-panel.left-side {
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            .side-action-panel.right-side {
-                border-left: none;
-                border-top: 1px solid var(--border-color);
-            }
-
-            .main-display {
-                order: -1; /* Elevates scoreboard matrix blocks above action lists during column stack collapse mode */
-                padding: 20px 10px;
-            }
-
-            .side-action-panel {
-                padding: 15px;
-            }
+            body { padding: 10px; }
+            .dashboard-main-body { flex-direction: column; }
+            .side-action-panel.left-side { border-right: none; border-bottom: 1px solid var(--border-color); }
+            .side-action-panel.right-side { border-left: none; border-top: 1px solid var(--border-color); }
+            .main-display { order: -1; padding: 20px 10px; }
+            .side-action-panel { padding: 15px; }
         }
     </style>
 </head>
@@ -405,9 +492,33 @@
 
     </div>
 
+    <div class="stats-container">
+        <div class="team-section-title">Live Match Progress Charts</div>
+        <div class="chart-layout-grid" id="charts-wrapper-target">
+            </div>
+    </div>
+
     <div class="utility-container">
         <button class="action-btn" onclick="undoPoint()">Undo Point ↩</button>
+        <button class="action-btn view-btn" onclick="openReportModal()">View Summary Report 📋</button>
         <button class="action-btn reset-btn" onclick="resetMatch()">Reset Match</button>
+    </div>
+</div>
+
+<div class="modal-overlay-frame" id="report-modal">
+    <div class="modal-wrapper">
+        <div class="modal-header-row">
+            <div class="modal-title">📄 Match Data Report Preview</div>
+            <button class="close-modal-x" onclick="closeReportModal()">&times;</button>
+        </div>
+        <div>
+            <span class="team-section-title">Structured Plain Document Output (CSV Format)</span>
+        </div>
+        <div class="preview-scroll-pane" id="report-preview-box"></div>
+        <div style="display:flex; gap:10px; margin-top:5px;">
+            <button class="action-btn" onclick="closeReportModal()">Close Preview</button>
+            <button class="action-btn view-btn" onclick="downloadStats()">Download Document (.CSV)</button>
+        </div>
     </div>
 </div>
 
@@ -421,6 +532,12 @@
         scoreData: {
             t1: { points: 0, games: 0, sets: 0 },
             t2: { points: 0, games: 0, sets: 0 }
+        },
+        stats: {
+            1: { winners: 0, errors: 0 },
+            2: { winners: 0, errors: 0 },
+            3: { winners: 0, errors: 0 },
+            4: { winners: 0, errors: 0 }
         },
         history: []
     };
@@ -451,6 +568,7 @@
         document.getElementById('lbl-btn-p2a').innerText = getPlayerName(3);
         document.getElementById('lbl-btn-p2b').innerText = getPlayerName(4);
         
+        renderPerformanceCharts();
         saveState();
     }
 
@@ -508,8 +626,15 @@
     function logPointDirect(winningTeamNum, playerActed, type) {
         state.history.push(JSON.parse(JSON.stringify({
             scoreData: state.scoreData,
-            currentServer: state.currentServer
+            currentServer: state.currentServer,
+            stats: state.stats
         })));
+
+        if (type === 'Winner') {
+            state.stats[playerActed].winners++;
+        } else if (type === 'Error') {
+            state.stats[playerActed].errors++;
+        }
 
         let scorer = (winningTeamNum === 1) ? state.scoreData.t1 : state.scoreData.t2;
         let opponent = (winningTeamNum === 1) ? state.scoreData.t2 : state.scoreData.t1;
@@ -518,15 +643,9 @@
 
         let gameWon = false;
         if (state.noAd) {
-            // No-Ad rule: first to reach 4 points wins the game (sudden death at 3-3 / 40-40)
-            if (scorer.points >= 4) {
-                gameWon = true;
-            }
+            if (scorer.points >= 4) gameWon = true;
         } else {
-            // Advantage rule: must win by 2 points once reaching 4 points
-            if (scorer.points >= 4 && (scorer.points - opponent.points) >= 2) {
-                gameWon = true;
-            }
+            if (scorer.points >= 4 && (scorer.points - opponent.points) >= 2) gameWon = true;
         }
 
         if (gameWon) {
@@ -541,7 +660,6 @@
                 state.scoreData.t2.games = 0;
             }
         } else if (!state.noAd && scorer.points >= 3 && opponent.points >= 3 && scorer.points === opponent.points) {
-            // Revert back to baseline Deuce (40-40) only if advantage scoring is enabled
             state.scoreData.t1.points = 3;
             state.scoreData.t2.points = 3;
         }
@@ -554,20 +672,118 @@
         let lastState = state.history.pop();
         state.scoreData = lastState.scoreData;
         state.currentServer = lastState.currentServer;
+        state.stats = lastState.stats || { 1: { winners: 0, errors: 0 }, 2: { winners: 0, errors: 0 }, 3: { winners: 0, errors: 0 }, 4: { winners: 0, errors: 0 } };
         renderDisplay();
     }
 
     function resetMatch() {
-        if (confirm("Reset current match scores back to zero?")) {
+        if (confirm("Reset match scores and visual graphs back to zero?")) {
             localStorage.removeItem(STORAGE_KEY);
             state.scoreData = {
                 t1: { points: 0, games: 0, sets: 0 },
                 t2: { points: 0, games: 0, sets: 0 }
             };
+            state.stats = {
+                1: { winners: 0, errors: 0 },
+                2: { winners: 0, errors: 0 },
+                3: { winners: 0, errors: 0 },
+                4: { winners: 0, errors: 0 }
+            };
             state.currentServer = 1;
             state.history = [];
             renderDisplay();
         }
+    }
+
+    function renderPerformanceCharts() {
+        const container = document.getElementById('charts-wrapper-target');
+        container.innerHTML = '';
+
+        // Determine maximum baseline value to calculate perfect percentage fill widths
+        let maxBaseline = 1;
+        for (let i = 1; i <= 4; i++) {
+            if (state.stats[i].winners > maxBaseline) maxBaseline = state.stats[i].winners;
+            if (state.stats[i].errors > maxBaseline) maxBaseline = state.stats[i].errors;
+        }
+
+        for (let i = 1; i <= 4; i++) {
+            if (state.matchMode === 'singles' && (i === 2 || i === 4)) continue;
+
+            let wPct = (state.stats[i].winners / maxBaseline) * 100;
+            let ePct = (state.stats[i].errors / maxBaseline) * 100;
+
+            let cardHTML = `
+                <div class="player-chart-card">
+                    <div class="chart-player-name">${getPlayerName(i)}</div>
+                    
+                    <div class="graph-metric-row">
+                        <div class="graph-meta-info">
+                            <span>Winners</span>
+                            <span>${state.stats[i].winners}</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill-indicator win-fill" style="width: ${wPct}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="graph-metric-row">
+                        <div class="graph-meta-info">
+                            <span>Errors</span>
+                            <span>${state.stats[i].errors}</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill-indicator err-fill" style="width: ${ePct}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += cardHTML;
+        }
+    }
+
+    function generateCSVString() {
+        let text = "Match Parameter,Value/Metric\n";
+        text += `Date,${document.getElementById('current-date').innerText}\n`;
+        text += `Mode,${state.matchMode.toUpperCase()}\n`;
+        text += `Scoring,${state.noAd ? "No-Advantage (Sudden Death)" : "Advantage Scoring"}\n`;
+        text += `Score Team 1,${state.scoreData.t1.sets} Sets / ${state.scoreData.t1.games} Games\n`;
+        text += `Score Team 2,${state.scoreData.t2.sets} Sets / ${state.scoreData.t2.games} Games\n\n`;
+        
+        text += "Player,Winners,Errors\n";
+        for (let i = 1; i <= 4; i++) {
+            if (state.matchMode === 'singles' && (i === 2 || i === 4)) continue;
+            let pName = getPlayerName(i).replace(/"/g, '""');
+            text += `"${pName}",${state.stats[i].winners},${state.stats[i].errors}\n`;
+        }
+        return text;
+    }
+
+    function openReportModal() {
+        const modal = document.getElementById('report-modal');
+        const previewBox = document.getElementById('report-preview-box');
+        
+        previewBox.innerText = generateCSVString();
+        modal.style.display = 'flex';
+    }
+
+    function closeReportModal() {
+        document.getElementById('report-modal').style.display = 'none';
+    }
+
+    function downloadStats() {
+        const csvText = generateCSVString();
+        const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        let fileDate = new Date().toISOString().slice(0, 10);
+        link.setAttribute("download", `Tennis_Report_${fileDate}.csv`);
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        closeReportModal();
     }
 
     function renderDisplay() {
@@ -591,6 +807,7 @@
         document.getElementById('dot-p2a').classList.toggle('serving', state.currentServer === 3);
         document.getElementById('dot-p2b').classList.toggle('serving', state.currentServer === 4);
 
+        renderPerformanceCharts();
         saveState();
     }
 
@@ -601,6 +818,9 @@
     if (cache) {
         state = JSON.parse(cache);
         if (state.noAd === undefined) state.noAd = false;
+        if (!state.stats) {
+            state.stats = { 1: { winners: 0, errors: 0 }, 2: { winners: 0, errors: 0 }, 3: { winners: 0, errors: 0 }, 4: { winners: 0, errors: 0 } };
+        }
         switchMatchMode(state.matchMode);
         renderNoAdButton();
     } else {
