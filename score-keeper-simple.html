@@ -419,7 +419,6 @@
         <button class="mode-btn" id="mode-doubles" onclick="switchMatchMode('doubles')">Doubles</button>
         <button class="mode-btn" id="mode-noad" onclick="toggleNoAdMode()">Advantage</button>
         
-        <!-- NEW SCORING SYSTEM SELECTOR -->
         <select class="selector-dropdown" id="format-selector" onchange="switchMatchFormat(this.value)">
             <option value="standard">Standard Set (6 Games)</option>
             <option value="short">Short Set (4 Games / Fast4)</option>
@@ -617,10 +616,7 @@
         }
         state.matchFormat = format;
         state.isTiebreak = (format === 'tiebreak7' || format === 'tiebreak10');
-        
-        // Hide/show the Advantage/No-Ad option if it's a standalone tiebreak match
         document.getElementById('mode-noad').style.display = state.isTiebreak ? 'none' : 'block';
-        
         resetScorePreservingStats();
     }
 
@@ -706,7 +702,11 @@
                 state.scoreData.t2.points = 0;
                 state.isTiebreak = false;
                 rotateServerAuto();
-                checkSetCalculations(scorer, opponent);
+                
+                // FIX: Award the set immediately on tiebreaker victory and reset game totals
+                scorer.sets++;
+                state.scoreData.t1.games = 0;
+                state.scoreData.t2.games = 0;
             }
             renderDisplay();
             return;
@@ -736,15 +736,24 @@
 
     function checkSetCalculations(scorer, opponent) {
         let maxGames = 6; 
-        if (state.matchFormat === 'short') maxGames = 4;
-        if (state.matchFormat === 'pro') maxGames = 8;
+        let tiebreakThreshold = 6;
 
-        // Auto check if format triggers tiebreaker threshold
-        if (state.scoreData.t1.games === maxGames && state.scoreData.t2.games === maxGames) {
+        // FIX: Reconfigured dynamic boundaries to respect standard tennis guidelines
+        if (state.matchFormat === 'short') {
+            maxGames = 4;
+            tiebreakThreshold = 3; // Fast4 Tiebreak triggers at 3-3
+        } else if (state.matchFormat === 'pro') {
+            maxGames = 8;
+            tiebreakThreshold = 8; // Pro Set Tiebreak triggers at 8-8
+        }
+
+        // Check if format triggers tiebreaker threshold
+        if (state.scoreData.t1.games === tiebreakThreshold && state.scoreData.t2.games === tiebreakThreshold) {
             state.isTiebreak = true;
             return;
         }
 
+        // Standard advantage set win calculation
         if (scorer.games >= maxGames && (scorer.games - opponent.games) >= 2) {
             scorer.sets++;
             state.scoreData.t1.games = 0;
@@ -852,7 +861,6 @@
         let t1Out, t2Out;
 
         if (state.isTiebreak) {
-            // Direct numbers rendered on board during any active tiebreakers
             t1Out = state.scoreData.t1.points;
             t2Out = state.scoreData.t2.points;
         } else {
