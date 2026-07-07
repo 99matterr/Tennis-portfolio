@@ -59,12 +59,14 @@
             background-color: #fafafa;
             padding: 12px 20px;
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .mode-btn {
             flex: 1;
+            min-width: 80px;
             background: #e8e8ed;
             border: none;
             color: var(--text-muted);
@@ -73,11 +75,27 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
         .mode-btn.active {
             background: var(--accent-blue);
             color: white;
+        }
+
+        .selector-dropdown {
+            flex: 1.5;
+            min-width: 170px;
+            background: #e8e8ed;
+            border: none;
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+            text-align: center;
         }
 
         .settings-panel {
@@ -144,7 +162,6 @@
 
         .editable-name:focus { border-bottom-color: var(--accent-blue); }
 
-        /* THE DASHBOARD INTERFACE GRID */
         .dashboard-main-body {
             display: flex;
             flex-direction: row;
@@ -207,7 +224,6 @@
         .rally-counter-box { width: 100%; background-color: #ffffff; border: 2px solid var(--accent-blue); border-radius: 14px; padding: 15px; text-align: center; cursor: pointer; user-select: none; box-sizing: border-box; }
         .rally-counter-value { font-size: 2.5rem; font-weight: 800; color: var(--text-main); margin-top: 5px; }
 
-        /* TAB DATA REPORT PANELS */
         .tab-panel-content { display: none; padding: 20px; min-height: 220px; max-height: 350px; overflow-y: auto; background-color: #ffffff; border-bottom: 1px solid var(--border-color); }
         .tab-panel-content.visible { display: block; }
         .stats-header-menu { font-size: 0.9rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 10px; }
@@ -221,7 +237,6 @@
         .log-entry-item { font-size: 0.9rem; padding: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--text-main); }
         .undo-inline-btn { background: var(--accent-red); border: none; color: white; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
-        /* THE DYNAMIC OVERLAY SYSTEMS */
         .popup-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-popup); z-index: 100; padding: 30px 20px 20px; display: none; flex-direction: column; overflow-y: auto; }
         .popup-overlay.active { display: flex; }
         .popup-title { text-align: center; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--accent-blue); }
@@ -265,7 +280,6 @@
         input:checked + .slider { background-color: var(--accent-blue); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* LAYOUT STACK COMPRESSION VIEWPORTS */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .dashboard-main-body { flex-direction: column; }
@@ -280,16 +294,24 @@
 
 <div class="tennis-app">
     <div class="app-header">
-        <span id="current-date-lbl">June 29, 2026</span>
+        <span id="current-date-lbl">July 6, 2026</span>
         <span>⚡ Connected</span>
     </div>
 
     <div class="match-type-bar">
         <button class="mode-btn active" id="mode-singles" onclick="switchMatchMode('singles')">Singles</button>
         <button class="mode-btn" id="mode-doubles" onclick="switchMatchMode('doubles')">Doubles</button>
+        
+        <select class="selector-dropdown" id="format-selector" onchange="switchMatchFormat(this.value)">
+            <option value="standard">Standard Set (6 Games)</option>
+            <option value="short">Short Set (4 Games / Fast4)</option>
+            <option value="pro">Pro Set (8 Games)</option>
+            <option value="tiebreak7">7-Point Tiebreak Match</option>
+            <option value="tiebreak10">10-Point Tiebreak Match</option>
+        </select>
     </div>
 
-    <div class="settings-panel">
+    <div class="settings-panel" id="noad-settings-box">
         <div class="settings-row">
             <span>No-Ad Scoring (Sudden Death at Deuce)</span>
             <label class="switch">
@@ -487,6 +509,7 @@
 <script>
     let state = {
         matchMode: 'singles',
+        matchFormat: 'standard',
         currentServer: 1,
         activeServeType: 'First',
         scoreData: {
@@ -559,6 +582,23 @@
         }
         setServer(state.currentServer);
         syncLabels();
+    }
+
+    function switchMatchFormat(format) {
+        if (state.pointHistory.length > 0 && !confirm("Changing the match structure midway will reset parts of your current scoring history. Continue?")) {
+            document.getElementById('format-selector').value = state.matchFormat;
+            return;
+        }
+        state.matchFormat = format;
+        state.isTiebreak = (format === 'tiebreak7' || format === 'tiebreak10');
+        
+        document.getElementById('noad-settings-box').style.display = state.isTiebreak ? 'none' : 'block';
+        
+        state.scoreData.t1.points = 0; state.scoreData.t1.games = 0; state.scoreData.t1.sets = 0;
+        state.scoreData.t2.points = 0; state.scoreData.t2.games = 0; state.scoreData.t2.sets = 0;
+        state.currentServer = 1;
+        state.pointHistory = [];
+        renderDashboard();
     }
 
     function setServer(num) {
@@ -721,15 +761,36 @@
         else if (r <= 8) scorer.r2++;
         else scorer.r3++;
 
+        // STANDALONE TIEBREAKER MATCH ENGINE
+        if (state.matchFormat === 'tiebreak7' || state.matchFormat === 'tiebreak10') {
+            let targetPoints = (state.matchFormat === 'tiebreak7') ? 7 : 10;
+            if (scorer.points >= targetPoints && (scorer.points - opponent.points) >= 2) {
+                scorer.sets++;
+                state.scoreData.t1.points = 0; state.scoreData.t2.points = 0;
+            } else {
+                if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 === 1) {
+                    rotateServer();
+                }
+            }
+            liveRallyCount = 0;
+            document.getElementById('live-rally-val').innerText = 0;
+            setServeType('First');
+            renderDashboard();
+            return;
+        }
+
         let ruleNoAd = document.getElementById('rule-noad').checked;
 
+        // SET-BASED AUTOMATED TIEBREAKER HANDLER
         if (state.isTiebreak) {
             if (scorer.points >= 7 && (scorer.points - opponent.points) >= 2) {
-                scorer.sets++;
-                state.scoreData.t1.games = 0; state.scoreData.t2.games = 0;
+                scorer.games++;
                 state.scoreData.t1.points = 0; state.scoreData.t2.points = 0;
                 state.isTiebreak = false;
                 rotateServer();
+                
+                scorer.sets++;
+                state.scoreData.t1.games = 0; state.scoreData.t2.games = 0;
             } else {
                 if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 === 1) {
                     rotateServer();
@@ -750,9 +811,13 @@
                 state.scoreData.t1.points = 0; state.scoreData.t2.points = 0;
                 rotateServer();
 
-                if (state.scoreData.t1.games === 6 && state.scoreData.t2.games === 6) {
+                let maxGames = 6;
+                if (state.matchFormat === 'short') maxGames = 4;
+                if (state.matchFormat === 'pro') maxGames = 8;
+
+                if (state.scoreData.t1.games === maxGames && state.scoreData.t2.games === maxGames) {
                     state.isTiebreak = true;
-                } else if (scorer.games >= 6 && (scorer.games - opponent.games) >= 2) {
+                } else if (scorer.games >= maxGames && (scorer.games - opponent.games) >= 2) {
                     scorer.sets++;
                     state.scoreData.t1.games = 0; state.scoreData.t2.games = 0;
                 }
@@ -832,28 +897,16 @@
     function clearAllCacheData() {
         if (confirm("Are you sure you want to completely clear this match layout and statistics values back to zero?")) {
             localStorage.removeItem('tennis_tracker_state');
-            
-            state = {
-                matchMode: state.matchMode, 
-                currentServer: 1,
-                activeServeType: 'First',
-                scoreData: {
-                    t1: { points: 0, games: 0, sets: 0, totalWon: 0, r1: 0, r2: 0, r3: 0, winners: 0, unforced: 0, fh: 0, bh: 0, serveIn: 0, totalServes: 0 },
-                    t2: { points: 0, games: 0, sets: 0, totalWon: 0, r1: 0, r2: 0, r3: 0, winners: 0, unforced: 0, fh: 0, bh: 0, serveIn: 0, totalServes: 0 }
-                },
-                isTiebreak: false,
-                pointHistory: []
-            };
-            
-            liveRallyCount = 0;
-            document.getElementById('live-rally-val').innerText = 0;
-            renderDashboard();
             window.location.reload();
         }
     }
 
     function exportStatsCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,Metric,Side 1,Side 2\n" +
+        const formatText = document.getElementById('format-selector').options[document.getElementById('format-selector').selectedIndex].text;
+        let csvContent = "data:text/csv;charset=utf-8,Configuration,Metric\n" +
+            `Match Format Rule,${formatText}\n` +
+            `Mode,${state.matchMode.toUpperCase()}\n\n` +
+            "Metric,Side 1,Side 2\n" +
             `Total Points Won,${state.scoreData.t1.totalWon},${state.scoreData.t2.totalWon}\n` +
             `Winners logged,${state.scoreData.t1.winners},${state.scoreData.t2.winners}\n` +
             `Unforced errors,${state.scoreData.t1.unforced},${state.scoreData.t2.unforced}\n`;
@@ -861,7 +914,16 @@
     }
 
     const cache = localStorage.getItem('tennis_tracker_state');
-    if (cache) { state = JSON.parse(cache); switchMatchMode(state.matchMode); renderDashboard(); } else { switchMatchMode('singles'); }
+    if (cache) { 
+        state = JSON.parse(cache); 
+        if (!state.matchFormat) state.matchFormat = 'standard';
+        document.getElementById('format-selector').value = state.matchFormat;
+        document.getElementById('noad-settings-box').style.display = (state.matchFormat === 'tiebreak7' || state.matchFormat === 'tiebreak10') ? 'none' : 'block';
+        switchMatchMode(state.matchMode); 
+        renderDashboard(); 
+    } else { 
+        switchMatchMode('singles'); 
+    }
 </script>
 </body>
 </html>
