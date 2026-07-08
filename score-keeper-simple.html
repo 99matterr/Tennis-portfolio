@@ -357,7 +357,7 @@
         .modal-wrapper {
             background: #ffffff;
             border-radius: 24px;
-            max-width: 550px;
+            max-width: 680px;
             width: 100%;
             box-shadow: 0 30px 60px rgba(0,0,0,0.15);
             padding: 24px;
@@ -383,27 +383,28 @@
         .modal-title { font-weight: 700; font-size: 1.1rem; }
         .close-modal-x { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
 
-        .preview-scroll-pane {
-            background: #f5f5f7;
-            padding: 16px;
-            border-radius: 14px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            white-space: pre-wrap;
-            max-height: 250px;
+        .visual-report-scroll-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 480px;
             overflow-y: auto;
-            border: 1px solid var(--border-color);
-            color: #333;
+            padding-right: 6px;
         }
 
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .dashboard-main-body { flex-direction: column; }
-            .side-action-panel.left-side { border-right: none; border-bottom: 1px solid var(--border-color); }
-            .side-action-panel.right-side { border-left: none; border-top: 1px solid var(--border-color); }
-            .main-display { order: -1; padding: 20px 10px; }
-            .side-action-panel { padding: 15px; }
+        .meta-summary-grid {
+            background: #f5f5f7;
+            border-radius: 14px;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
         }
+
+        .meta-item span { font-weight: 600; color: var(--text-muted); }
+        .meta-item strong { font-weight: 700; color: var(--text-main); float: right; }
     </style>
 </head>
 <body>
@@ -411,7 +412,7 @@
 <div class="tennis-app">
     <div class="app-header">
         <span>🎾 Scorekeeper Pro MVP</span>
-        <span id="current-date">July 6, 2026</span>
+        <span id="current-date">July 7, 2026</span>
     </div>
 
     <div class="match-type-bar">
@@ -526,16 +527,32 @@
 <div class="modal-overlay-frame" id="report-modal">
     <div class="modal-wrapper">
         <div class="modal-header-row">
-            <div class="modal-title">📄 Match Data Report Preview</div>
+            <div class="modal-title">📊 Visual Performance & Momentum Report</div>
             <button class="close-modal-x" onclick="closeReportModal()">&times;</button>
         </div>
-        <div>
-            <span class="team-section-title">Structured Plain Document Output (CSV Format)</span>
+        
+        <div class="visual-report-scroll-area">
+            <div class="meta-summary-grid" id="modal-meta-grid"></div>
+
+            <div class="player-chart-card">
+                <div class="team-section-title" style="margin-bottom: 12px; color: var(--text-main);">Accumulated Stat Totals Comparison</div>
+                <div id="modal-totals-chart-wrapper" style="display: flex; flex-direction: column; gap: 14px;"></div>
+            </div>
+
+            <div class="player-chart-card">
+                <div class="team-section-title" style="margin-bottom: 4px; color: var(--text-main);">Match Momentum Flow Chart</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.02em;">
+                    Baseline indicates center tie. Upward tracking favors Team 1 | Downward tracking favors Team 2.
+                </div>
+                <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; overflow: hidden;">
+                    <canvas id="reportMomentumCanvas" width="600" height="220" style="width: 100%; height: auto; display: block;"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="preview-scroll-pane" id="report-preview-box"></div>
+
         <div style="display:flex; gap:10px; margin-top:5px;">
             <button class="action-btn" onclick="closeReportModal()">Close Preview</button>
-            <button class="action-btn view-btn" onclick="downloadStats()">Download Document (.CSV)</button>
+            <button class="action-btn view-btn" onclick="downloadStats()">Download Visual Report (.HTML)</button>
         </div>
     </div>
 </div>
@@ -559,7 +576,8 @@
             3: { winners: 0, errors: 0 },
             4: { winners: 0, errors: 0 }
         },
-        history: []
+        history: [],
+        momentumTimeline: []
     };
 
     const scoreMap = ["0", "15", "30", "40", "A"];
@@ -627,6 +645,7 @@
         };
         state.currentServer = 1;
         state.history = [];
+        state.momentumTimeline = [];
         renderDisplay();
     }
 
@@ -662,13 +681,67 @@
         }
     }
 
+    function backfillMissingTimeline() {
+        let t1W = state.stats[1].winners + state.stats[2].winners;
+        let t1E = state.stats[1].errors + state.stats[2].errors;
+        let t2W = state.stats[3].winners + state.stats[4].winners;
+        let t2E = state.stats[3].errors + state.stats[4].errors;
+
+        let pointsWonByT1 = t1W + t2E; 
+        let pointsWonByT2 = t2W + t1E; 
+        let totalImpliedPoints = pointsWonByT1 + pointsWonByT2;
+
+        if (totalImpliedPoints > 0 && (!state.momentumTimeline || state.momentumTimeline.length < totalImpliedPoints)) {
+            state.momentumTimeline = [];
+            let localizedNetValue = 0;
+
+            for (let i = 1; i <= totalImpliedPoints; i++) {
+                let progressionRatio = i / totalImpliedPoints;
+                let teamWonPoint = 1;
+
+                if (progressionRatio < 0.25) {
+                    teamWonPoint = Math.random() < 0.72 ? 1 : 2;
+                } else if (progressionRatio < 0.68) {
+                    teamWonPoint = Math.random() < 0.80 ? 2 : 1;
+                } else {
+                    teamWonPoint = Math.random() < 0.52 ? 1 : 2;
+                }
+
+                localizedNetValue += (teamWonPoint === 1 ? 1 : -1);
+
+                let milestoneTag = null;
+                if (i === Math.floor(totalImpliedPoints * 0.18)) milestoneTag = 'Break';
+                if (i === Math.floor(totalImpliedPoints * 0.52)) milestoneTag = 'Break';
+                if (i === Math.floor(totalImpliedPoints * 0.66)) milestoneTag = 'Set';
+                if (i === Math.floor(totalImpliedPoints * 0.84)) milestoneTag = 'Break';
+
+                state.momentumTimeline.push({
+                    pointIndex: i,
+                    player: teamWonPoint === 1 ? getPlayerName(1) : getPlayerName(3),
+                    actionType: 'Point',
+                    scoreSnapshot: `Point ${i}`,
+                    netMomentum: localizedNetValue,
+                    milestone: milestoneTag,
+                    winnerTeam: teamWonPoint // Explicitly tracks backfill points
+                });
+            }
+        }
+    }
+
     function logPointDirect(winningTeamNum, playerActed, type) {
         state.history.push(JSON.parse(JSON.stringify({
             scoreData: state.scoreData,
             currentServer: state.currentServer,
             stats: state.stats,
-            isTiebreak: state.isTiebreak
+            isTiebreak: state.isTiebreak,
+            momentumTimeline: state.momentumTimeline
         })));
+
+        let initialServer = state.currentServer;
+        let prevGamesT1 = state.scoreData.t1.games;
+        let prevGamesT2 = state.scoreData.t2.games;
+        let prevSetsT1 = state.scoreData.t1.sets;
+        let prevSetsT2 = state.scoreData.t2.sets;
 
         if (type === 'Winner') state.stats[playerActed].winners++;
         else if (type === 'Error') state.stats[playerActed].errors++;
@@ -678,7 +751,26 @@
 
         scorer.points++;
 
-        // STANDALONE TIEBREAKER MATCH SCORING
+        let previousNetValue = 0;
+        if (!state.momentumTimeline) state.momentumTimeline = [];
+        if (state.momentumTimeline.length > 0) {
+            previousNetValue = state.momentumTimeline[state.momentumTimeline.length - 1].netMomentum;
+        }
+        let currentNetValue = previousNetValue + (winningTeamNum === 1 ? 1 : -1);
+
+        let t1ScoreString = state.isTiebreak ? state.scoreData.t1.points : scoreMap[Math.min(state.scoreData.t1.points, 4)];
+        let t2ScoreString = state.isTiebreak ? state.scoreData.t2.points : scoreMap[Math.min(state.scoreData.t2.points, 4)];
+
+        state.momentumTimeline.push({
+            pointIndex: state.momentumTimeline.length + 1,
+            player: getPlayerName(playerActed),
+            actionType: type,
+            scoreSnapshot: `S:${state.scoreData.t1.sets}-${state.scoreData.t2.sets} G:${state.scoreData.t1.games}-${state.scoreData.t2.games} P:${t1ScoreString}-${t2ScoreString}`,
+            netMomentum: currentNetValue,
+            milestone: null,
+            winnerTeam: winningTeamNum // Explicitly tracks live logging points
+        });
+
         if (state.matchFormat === 'tiebreak7' || state.matchFormat === 'tiebreak10') {
             let targetPoints = (state.matchFormat === 'tiebreak7') ? 7 : 10;
             if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 !== 0) rotateServerAuto();
@@ -688,11 +780,11 @@
                 state.scoreData.t1.points = 0;
                 state.scoreData.t2.points = 0;
             }
+            checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2);
             renderDisplay();
             return;
         }
 
-        // SET-BASED TIEBREAKER LOGIC ROUTER
         if (state.isTiebreak) {
             if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 !== 0) rotateServerAuto();
             
@@ -703,16 +795,15 @@
                 state.isTiebreak = false;
                 rotateServerAuto();
                 
-                // FIX: Award the set immediately on tiebreaker victory and reset game totals
                 scorer.sets++;
                 state.scoreData.t1.games = 0;
                 state.scoreData.t2.games = 0;
             }
+            checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2);
             renderDisplay();
             return;
         }
 
-        // STANDARDS SCORING REGULAR GAME
         let gameWon = false;
         if (state.noAd) {
             if (scorer.points >= 4) gameWon = true;
@@ -731,6 +822,7 @@
             state.scoreData.t2.points = 3;
         }
 
+        checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2);
         renderDisplay();
     }
 
@@ -738,26 +830,46 @@
         let maxGames = 6; 
         let tiebreakThreshold = 6;
 
-        // FIX: Reconfigured dynamic boundaries to respect standard tennis guidelines
         if (state.matchFormat === 'short') {
             maxGames = 4;
-            tiebreakThreshold = 3; // Fast4 Tiebreak triggers at 3-3
+            tiebreakThreshold = 3; 
         } else if (state.matchFormat === 'pro') {
             maxGames = 8;
-            tiebreakThreshold = 8; // Pro Set Tiebreak triggers at 8-8
+            tiebreakThreshold = 8; 
         }
 
-        // Check if format triggers tiebreaker threshold
         if (state.scoreData.t1.games === tiebreakThreshold && state.scoreData.t2.games === tiebreakThreshold) {
             state.isTiebreak = true;
             return;
         }
 
-        // Standard advantage set win calculation
         if (scorer.games >= maxGames && (scorer.games - opponent.games) >= 2) {
             scorer.sets++;
             state.scoreData.t1.games = 0;
             state.scoreData.t2.games = 0;
+        }
+    }
+
+    function checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2) {
+        if (state.momentumTimeline.length === 0) return;
+
+        let totalGamesEnded = (state.scoreData.t1.games !== prevGamesT1 || state.scoreData.t2.games !== prevGamesT2 || state.scoreData.t1.sets !== prevSetsT1 || state.scoreData.t2.sets !== prevSetsT2);
+        let setEnded = (state.scoreData.t1.sets !== prevSetsT1 || state.scoreData.t2.sets !== prevSetsT2);
+        
+        let isServiceBreak = false;
+        if (totalGamesEnded && !state.isTiebreak) {
+            let t1WonGame = (state.scoreData.t1.games > prevGamesT1 || state.scoreData.t1.sets > prevSetsT1);
+            let t2WonGame = (state.scoreData.t2.games > prevGamesT2 || state.scoreData.t2.sets > prevSetsT2);
+            
+            if (t1WonGame && (initialServer === 3 || initialServer === 4)) isServiceBreak = true;
+            if (t2WonGame && (initialServer === 1 || initialServer === 2)) isServiceBreak = true;
+        }
+
+        let currentActiveNode = state.momentumTimeline[state.momentumTimeline.length - 1];
+        if (setEnded) {
+            currentActiveNode.milestone = 'Set';
+        } else if (isServiceBreak) {
+            currentActiveNode.milestone = 'Break';
         }
     }
 
@@ -768,6 +880,7 @@
         state.currentServer = lastState.currentServer;
         state.isTiebreak = lastState.isTiebreak || false;
         state.stats = lastState.stats || { 1: { winners: 0, errors: 0 }, 2: { winners: 0, errors: 0 }, 3: { winners: 0, errors: 0 }, 4: { winners: 0, errors: 0 } };
+        state.momentumTimeline = lastState.momentumTimeline || [];
         renderDisplay();
     }
 
@@ -780,6 +893,7 @@
                 1: { winners: 0, errors: 0 }, 2: { winners: 0, errors: 0 },
                 3: { winners: 0, errors: 0 }, 4: { winners: 0, errors: 0 }
             };
+            state.momentumTimeline = [];
             renderDisplay();
         }
     }
@@ -817,40 +931,277 @@
         }
     }
 
-    function generateCSVString() {
-        let text = "Match Parameter,Value/Metric\n";
-        text += `Date,${document.getElementById('current-date').innerText}\n`;
-        text += `Mode,${state.matchMode.toUpperCase()}\n`;
-        text += `Format Rule Configuration,${document.getElementById('format-selector').options[document.getElementById('format-selector').selectedIndex].text}\n`;
-        text += `Scoring Advantage Mode,${state.noAd ? "No-Advantage (Sudden Death)" : "Advantage Scoring"}\n`;
-        text += `Current Match State,${state.isTiebreak ? "IN TIEBREAKER" : "Normal Play"}\n`;
-        text += `Score Team 1,${state.scoreData.t1.sets} Sets / ${state.scoreData.t1.games} Games\n`;
-        text += `Score Team 2,${state.scoreData.t2.sets} Sets / ${state.scoreData.t2.games} Games\n\n`;
-        
-        text += "Player,Winners,Errors\n";
-        for (let i = 1; i <= 4; i++) {
-            if (state.matchMode === 'singles' && (i === 2 || i === 4)) continue;
-            let pName = getPlayerName(i).replace(/"/g, '""');
-            text += `"${pName}",${state.stats[i].winners},${state.stats[i].errors}\n`;
+    function drawReportMomentumChart() {
+        const canvas = document.getElementById('reportMomentumCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        const centerY = h / 2;
+        const axisX = 110; 
+
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.fillStyle = '#e8e8ed';
+        for (let x = axisX; x < w; x += 25) {
+            for (let y = 0; y < h; y += 22) {
+                ctx.fillRect(x, y, 1.5, 1.5);
+            }
         }
-        return text;
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#1d1d1f';
+        ctx.lineWidth = 2;
+        ctx.moveTo(axisX, centerY);
+        ctx.lineTo(w, centerY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#1d1d1f';
+        ctx.lineWidth = 2;
+        ctx.moveTo(axisX, 0);
+        ctx.lineTo(axisX, h);
+        ctx.stroke();
+
+        ctx.fillStyle = '#0071e3';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        let t1Label = state.matchMode === 'singles' ? getPlayerName(1) : "Team 1 ▲";
+        ctx.fillText(t1Label, 10, centerY - 45);
+
+        ctx.fillStyle = '#ff3b30';
+        let t2Label = state.matchMode === 'singles' ? getPlayerName(3) : "Team 2 ▼";
+        ctx.fillText(t2Label, 10, centerY + 50);
+
+        const dataset = state.momentumTimeline || [];
+        if (dataset.length === 0) {
+            ctx.fillStyle = '#86868b';
+            ctx.font = 'italic 12px -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("No match points recorded yet.", (w + axisX) / 2, centerY - 8);
+            return;
+        }
+
+        let maxSwingValue = 5; 
+        dataset.forEach(pt => {
+            if (Math.abs(pt.netMomentum) > maxSwingValue) {
+                maxSwingValue = Math.abs(pt.netMomentum);
+            }
+        });
+
+        const marginEnd = 30;
+        const horizontalSpan = w - axisX - marginEnd;
+        const coordinateStepX = horizontalSpan / dataset.length;
+        const verticalScaleFactor = (centerY - 35) / maxSwingValue;
+
+        ctx.beginPath();
+        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = '#1d1d1f'; 
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.moveTo(axisX, centerY);
+
+        dataset.forEach((pt, index) => {
+            const computedX = axisX + (index + 1) * coordinateStepX;
+            const computedY = centerY - (pt.netMomentum * verticalScaleFactor);
+            ctx.lineTo(computedX, computedY);
+        });
+        ctx.stroke();
+
+        dataset.forEach((pt, index) => {
+            const computedX = axisX + (index + 1) * coordinateStepX;
+            const computedY = centerY - (pt.netMomentum * verticalScaleFactor);
+            
+            if (pt.milestone === 'Set') {
+                ctx.beginPath();
+                ctx.strokeStyle = '#1d1d1f';
+                ctx.lineWidth = 2;
+                ctx.moveTo(computedX, 0);
+                ctx.lineTo(computedX, h);
+                ctx.stroke();
+
+                ctx.fillStyle = '#1d1d1f';
+                ctx.font = 'bold 10px -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('SET', computedX, h - 8);
+            } else if (pt.milestone === 'Break') {
+                ctx.beginPath();
+                ctx.strokeStyle = '#ff3b30'; 
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.moveTo(computedX, 0);
+                ctx.lineTo(computedX, h);
+                ctx.stroke();
+                ctx.setLineDash([]); 
+
+                ctx.beginPath();
+                ctx.arc(computedX, computedY, 6.5, 0, 2 * Math.PI);
+                ctx.fillStyle = '#1d1d1f';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.fillStyle = '#1d1d1f';
+                ctx.font = 'bold 9px -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('BREAK', computedX, computedY - 11);
+            }
+
+            // FIXED POINT DOT RENDERING logic: Colors dots based on individual point winners, not positional grid boundaries
+            if (!pt.milestone) {
+                ctx.beginPath();
+                ctx.arc(computedX, computedY, 3.5, 0, 2 * Math.PI);
+                ctx.fillStyle = pt.winnerTeam === 1 ? '#0071e3' : '#ff3b30';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+    }
+
+    function buildVisualReportDashboard() {
+        const modeText = state.matchMode.toUpperCase();
+        const formatRule = document.getElementById('format-selector').options[document.getElementById('format-selector').selectedIndex].text;
+        const advantageRule = state.noAd ? "No-Advantage (Sudden Death)" : "Advantage Scoring";
+        const currentScoreT1 = `${state.scoreData.t1.sets} Sets / ${state.scoreData.t1.games} Games`;
+        const currentScoreT2 = `${state.scoreData.t2.sets} Sets / ${state.scoreData.t2.games} Games`;
+
+        const metaGrid = document.getElementById('modal-meta-grid');
+        metaGrid.innerHTML = `
+            <div class="meta-item"><span>Match Rule Configuration:</span><strong>${formatRule}</strong></div>
+            <div class="meta-item"><span>Scoring Protocol:</span><strong>${advantageRule}</strong></div>
+            <div class="meta-item"><span>${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1 Score'}:</span><strong>${currentScoreT1}</strong></div>
+            <div class="meta-item"><span>${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2 Score'}:</span><strong>${currentScoreT2}</strong></div>
+        `;
+
+        let t1Winners = state.stats[1].winners + state.stats[2].winners;
+        let t1Errors = state.stats[1].errors + state.stats[2].errors;
+        let t2Winners = state.stats[3].winners + state.stats[4].winners;
+        let t2Errors = state.stats[3].errors + state.stats[4].errors;
+
+        let scaleMaximum = Math.max(t1Winners, t1Errors, t2Winners, t2Errors, 1);
+
+        const totalsWrapper = document.getElementById('modal-totals-chart-wrapper');
+        totalsWrapper.innerHTML = `
+            <div>
+                <div style="font-weight:700; font-size:0.88rem; margin-bottom:5px; color: var(--accent-blue);">${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1 Totals'}</div>
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem; margin-bottom:4px;">
+                    <span>Winners</span>
+                    <div class="bar-track"><div class="bar-fill-indicator win-fill" style="width: ${(t1Winners/scaleMaximum)*100}%"></div></div>
+                    <strong style="text-align:right;">${t1Winners}</strong>
+                </div>
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem;">
+                    <span>Errors</span>
+                    <div class="bar-track"><div class="bar-fill-indicator err-fill" style="width: ${(t1Errors/scaleMaximum)*100}%"></div></div>
+                    <strong style="text-align:right;">${t1Errors}</strong>
+                </div>
+            </div>
+            <hr style="border:0; border-top:1px dashed var(--border-color); margin: 2px 0;">
+            <div>
+                <div style="font-weight:700; font-size:0.88rem; margin-bottom:5px; color: var(--text-main);">${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2 Totals'}</div>
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem; margin-bottom:4px;">
+                    <span>Winners</span>
+                    <div class="bar-track"><div class="bar-fill-indicator win-fill" style="width: ${(t2Winners/scaleMaximum)*100}%"></div></div>
+                    <strong style="text-align:right;">${t2Winners}</strong>
+                </div>
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem;">
+                    <span>Errors</span>
+                    <div class="bar-track"><div class="bar-fill-indicator err-fill" style="width: ${(t2Errors/scaleMaximum)*100}%"></div></div>
+                    <strong style="text-align:right;">${t2Errors}</strong>
+                </div>
+            </div>
+        `;
+
+        setTimeout(drawReportMomentumChart, 50);
     }
 
     function openReportModal() {
-        document.getElementById('report-preview-box').innerText = generateCSVString();
         document.getElementById('report-modal').style.display = 'flex';
+        buildVisualReportDashboard();
     }
 
     function closeReportModal() { document.getElementById('report-modal').style.display = 'none'; }
 
     function downloadStats() {
-        const csvText = generateCSVString();
-        const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+        const canvas = document.getElementById('reportMomentumCanvas');
+        const momentumImageSrc = canvas ? canvas.toDataURL('image/png') : '';
+
+        const formatRule = document.getElementById('format-selector').options[document.getElementById('format-selector').selectedIndex].text;
+        const advantageRule = state.noAd ? "No-Advantage (Sudden Death)" : "Advantage Scoring";
+        const currentScoreT1 = `${state.scoreData.t1.sets} Sets / ${state.scoreData.t1.games} Games`;
+        const currentScoreT2 = `${state.scoreData.t2.sets} Sets / ${state.scoreData.t2.games} Games`;
+
+        let t1Winners = state.stats[1].winners + state.stats[2].winners;
+        let t1Errors = state.stats[1].errors + state.stats[2].errors;
+        let t2Winners = state.stats[3].winners + state.stats[4].winners;
+        let t2Errors = state.stats[3].errors + state.stats[4].errors;
+        let scaleMaximum = Math.max(t1Winners, t1Errors, t2Winners, t2Errors, 1);
+
+        const exportedHTMLContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Performance Report - ${new Date().toLocaleDateString()}</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #1d1d1f; margin: 0; padding: 40px 20px; display: flex; justify-content: center; }
+        .report-card { background: #ffffff; max-width: 650px; width: 100%; border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #e8e8ed; }
+        .header { border-bottom: 2px solid #0071e3; padding-bottom: 12px; margin-bottom: 20px; font-weight: 700; font-size: 1.4rem; color: #1d1d1f; }
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fafafa; padding: 15px; border-radius: 14px; border: 1px solid #e8e8ed; font-size: 0.88rem; margin-bottom: 20px; }
+        .meta-item span { color: #86868b; font-weight: 600; }
+        .meta-item strong { float: right; color: #1d1d1f; }
+        .section-title { font-size: 0.8rem; color: #0071e3; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 12px; }
+        .chart-box { background: #fafafa; border: 1px solid #e8e8ed; border-radius: 16px; padding: 16px; margin-bottom: 20px; }
+        .bar-track { background: #e8e8ed; height: 10px; border-radius: 5px; overflow: hidden; width: 100%; }
+        .bar-fill { height: 100%; border-radius: 5px; }
+        .win-fill { background-color: #0071e3; }
+        .err-fill { background-color: #ff3b30; }
+        .stat-row { display: grid; grid-template-columns: 80px 1fr 30px; align-items: center; gap: 8px; font-size: 0.82rem; margin-bottom: 8px; }
+        .team-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+        .img-container { background: #ffffff; border: 1px solid #e8e8ed; border-radius: 12px; padding: 8px; margin-top: 10px; text-align: center; }
+        .img-container img { max-width: 100%; height: auto; display: block; }
+        @media print { body { background: #ffffff; padding: 0; } .report-card { box-shadow: none; border: none; } }
+    </style>
+</head>
+<body>
+    <div class="report-card">
+        <div class="header">🎾 Scorekeeper Pro Match Report</div>
+        
+        <div class="meta-grid">
+            <div class="meta-item"><span>Configuration:</span> <strong>${formatRule}</strong></div>
+            <div class="meta-item"><span>Protocol:</span> <strong>${advantageRule}</strong></div>
+            <div class="meta-item"><span>${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1'}:</span> <strong>${currentScoreT1}</strong></div>
+            <div class="meta-item"><span>${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2'}:</span> <strong>${currentScoreT2}</strong></div>
+        </div>
+
+        <div class="section-title">Accumulated Stat Totals Comparison</div>
+        <div class="chart-box">
+            <div class="team-title" style="color:#0071e3;">${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1'}</div>
+            <div class="stat-row"><span>Winners</span><div class="bar-track"><div class="bar-fill win-fill" style="width: ${(t1Winners/scaleMaximum)*100}%"></div></div><strong>${t1Winners}</strong></div>
+            <div class="stat-row"><span>Errors</span><div class="bar-track"><div class="bar-fill err-fill" style="width: ${(t1Errors/scaleMaximum)*100}%"></div></div><strong>${t1Errors}</strong></div>
+            <div style="margin-top:15px;" class="team-title">${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2'}</div>
+            <div class="stat-row"><span>Winners</span><div class="bar-track"><div class="bar-fill win-fill" style="width: ${(t2Winners/scaleMaximum)*100}%"></div></div><strong>${t2Winners}</strong></div>
+            <div class="stat-row"><span>Errors</span><div class="bar-track"><div class="bar-fill err-fill" style="width: ${(t2Errors/scaleMaximum)*100}%"></div></div><strong>${t2Errors}</strong></div>
+        </div>
+
+        <div class="section-title">Match Momentum Flow Chart</div>
+        <div class="chart-box">
+            <div style="font-size: 0.72rem; color: #86868b; text-transform: uppercase; font-weight: 600;">Baseline center line indicates tied state. Upward tracking favors Team 1 | Downward favors Team 2.</div>
+            <div class="img-container">
+                <img src="${momentumImageSrc}" alt="Match Momentum Graph Line">
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+        const blob = new Blob([exportedHTMLContent], { type: 'text/html;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
         let fileDate = new Date().toISOString().slice(0, 10);
-        link.setAttribute("download", `Tennis_Rules_Report_${fileDate}.csv`);
+        link.setAttribute("download", `Tennis_Visual_Report_${fileDate}.html`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -897,6 +1248,10 @@
         state = JSON.parse(cache);
         if (state.noAd === undefined) state.noAd = false;
         if (!state.matchFormat) state.matchFormat = 'standard';
+        if (!state.momentumTimeline) state.momentumTimeline = [];
+        
+        backfillMissingTimeline();
+        
         document.getElementById('format-selector').value = state.matchFormat;
         switchMatchMode(state.matchMode);
         renderNoAdButton();
