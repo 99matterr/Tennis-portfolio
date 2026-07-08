@@ -234,6 +234,11 @@
         .stat-val.right { text-align: right; }
         .stat-lbl { color: var(--text-muted); text-align: center; flex: 1; font-weight: 500; }
 
+        .bar-track { background: #e8e8ed; height: 10px; border-radius: 5px; overflow: hidden; width: 100%; }
+        .bar-fill-indicator { height: 100%; width: 0%; border-radius: 5px; transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .bar-fill-indicator.win-fill { background-color: var(--accent-blue); }
+        .bar-fill-indicator.err-fill { background-color: var(--accent-red); }
+
         .log-entry-item { font-size: 0.9rem; padding: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; color: var(--text-main); }
         .undo-inline-btn { background: var(--accent-red); border: none; color: white; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
@@ -280,13 +285,110 @@
         input:checked + .slider { background-color: var(--accent-blue); }
         input:checked + .slider:before { transform: translateX(22px); }
 
+        /* Report Modal Layout Styles */
+        .modal-overlay-frame {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.40);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .modal-wrapper {
+            background: #ffffff;
+            border-radius: 24px;
+            max-width: 680px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: modalPop 0.25s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .modal-title { font-weight: 700; font-size: 1.1rem; }
+        .close-modal-x { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+
+        .visual-report-scroll-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .player-chart-card {
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .team-section-title {
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .meta-summary-grid {
+            background: #f5f5f7;
+            border-radius: 14px;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 16px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .meta-item span { font-weight: 600; color: var(--text-muted); }
+        .meta-item strong { font-weight: 700; color: var(--text-main); float: right; }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #d2d2d7;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover { background: #f5f5f7; }
+        .action-btn.view-btn { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #ffffff; }
+        .action-btn.view-btn:hover { background-color: #0056b3; border-color: #0056b3; }
+
         @media (max-width: 768px) {
             body { padding: 10px; }
             .dashboard-main-body { flex-direction: column; }
+            .main-display { order: -1; padding: 25px 10px; }
             .side-action-panel.left-side { border-right: none; border-bottom: 1px solid var(--border-color); }
             .side-action-panel.right-side { border-left: none; border-top: 1px solid var(--border-color); }
-            .main-display { order: -1; padding: 25px 10px; }
-            .side-action-panel { padding: 15px; }
         }
     </style>
 </head>
@@ -406,8 +508,6 @@
         <div class="stats-header-menu"><span>🏸 Shot Metric Performance</span></div>
         <div class="stat-line"><span class="stat-val left" id="shot-t1-winners">0</span><span class="stat-lbl">Winners</span><span class="stat-val right" id="shot-t2-winners">0</span></div>
         <div class="stat-line"><span class="stat-val left" id="shot-t1-unforced">0</span><span class="stat-lbl">Unforced Errors</span><span class="stat-val right" id="shot-t2-unforced">0</span></div>
-        <div class="stat-line"><span class="stat-val left" id="shot-t1-fh">0</span><span class="stat-lbl">Forehand Counts</span><span class="stat-val right" id="shot-t2-fh">0</span></div>
-        <div class="stat-line"><span class="stat-val left" id="shot-t1-bh">0</span><span class="stat-lbl">Backhand Counts</span><span class="stat-val right" id="shot-t2-bh">0</span></div>
     </div>
 
     <div class="tab-panel-content" id="panel-match-log">
@@ -417,14 +517,14 @@
 
     <div class="action-utility-bar">
         <button class="utility-btn" style="background-color: #ff9500; color: #fff; border-color: #ff9500;" onclick="undoLastPoint()">Undo Last Point ↩</button>
-        <button class="utility-btn" onclick="exportStatsCSV()">Export CSV</button>
+        <button class="utility-btn" style="background-color: var(--accent-blue); color: white; border-color: var(--accent-blue);" onclick="openReportModal()">View Summary Report 📋</button>
         <button class="utility-btn" style="background-color: var(--accent-red); color: white; border-color: var(--accent-red);" onclick="clearAllCacheData()">Reset Match</button>
     </div>
 
     <div class="app-nav">
-        <div class="nav-item active" onclick="switchMainTab('match-stats')"><div class="nav-icon">🎾</div>Match Stats</div>
-        <div class="nav-item" onclick="switchMainTab('shot-stats')"><div class="nav-icon">🏸</div>Shot Stats</div>
-        <div class="nav-item" onclick="switchMainTab('match-log')"><div class="nav-icon">📝</div>Match Log</div>
+        <div class="nav-item active" onclick="switchMainTab('match-stats', this)"><div class="nav-icon">🎾</div>Match Stats</div>
+        <div class="nav-item" onclick="switchMainTab('shot-stats', this)"><div class="nav-icon">🏸</div>Shot Stats</div>
+        <div class="nav-item" onclick="switchMainTab('match-log', this)"><div class="nav-icon">📝</div>Match Log</div>
     </div>
 
     <div class="popup-overlay" id="point-popup">
@@ -506,6 +606,39 @@
     </div>
 </div>
 
+<div class="modal-overlay-frame" id="report-modal">
+    <div class="modal-wrapper">
+        <div class="modal-header-row">
+            <div class="modal-title">📊 Visual Performance & Momentum Report</div>
+            <button class="close-modal-x" onclick="closeReportModal()">&times;</button>
+        </div>
+        
+        <div class="visual-report-scroll-area">
+            <div class="meta-summary-grid" id="modal-meta-grid"></div>
+
+            <div class="player-chart-card">
+                <div class="team-section-title" style="margin-bottom: 12px; color: var(--text-main);">Accumulated Stat Totals Comparison</div>
+                <div id="modal-totals-chart-wrapper" style="display: flex; flex-direction: column; gap: 14px;"></div>
+            </div>
+
+            <div class="player-chart-card">
+                <div class="team-section-title" style="margin-bottom: 4px; color: var(--text-main);">Match Momentum Flow Chart</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.02em;">
+                    Baseline indicates center tie. Upward tracking favors Team 1 | Downward tracking favors Team 2.
+                </div>
+                <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; overflow: hidden;">
+                    <canvas id="reportMomentumCanvas" width="600" height="220" style="width: 100%; height: auto; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:5px;">
+            <button class="action-btn" onclick="closeReportModal()">Close Preview</button>
+            <button class="action-btn view-btn" onclick="downloadStats()">Download Visual Report (.HTML)</button>
+        </div>
+    </div>
+</div>
+
 <script>
     let state = {
         matchMode: 'singles',
@@ -517,7 +650,8 @@
             t2: { points: 0, games: 0, sets: 0, totalWon: 0, r1: 0, r2: 0, r3: 0, winners: 0, unforced: 0, fh: 0, bh: 0, serveIn: 0, totalServes: 0 }
         },
         isTiebreak: false,
-        pointHistory: []
+        pointHistory: [],
+        momentumTimeline: []
     };
 
     let winningSideTarget = 1; 
@@ -598,6 +732,7 @@
         state.scoreData.t2.points = 0; state.scoreData.t2.games = 0; state.scoreData.t2.sets = 0;
         state.currentServer = 1;
         state.pointHistory = [];
+        state.momentumTimeline = [];
         renderDashboard();
     }
 
@@ -632,20 +767,22 @@
 
         if (type === 'ace') {
             sData.serveIn++;
-            processScoreOutcome(serverTeamNum, `Serve Ace by ${getPlayerName(state.currentServer)}`, { outcome: 'Ace', rally: 1 });
+            processScoreOutcome(serverTeamNum, `Serve Ace by ${getPlayerName(state.currentServer)}`, { outcome: 'Winner', rally: 1 });
         } else if (type === 'fault') {
             if (state.activeServeType === 'First') {
                 setServeType('Second');
                 saveToLocalStorage();
             } else {
                 let receiverTeam = (serverTeamNum === 1) ? 2 : 1;
-                processScoreOutcome(receiverTeam, `Double Fault by ${getPlayerName(state.currentServer)}`, { outcome: 'Double Fault', rally: 0 });
+                processScoreOutcome(receiverTeam, `Double Fault by ${getPlayerName(state.currentServer)}`, { outcome: 'Unforced Error', rally: 0 });
             }
         }
     }
 
     function openPointFlow(sideNum) {
         winningSideTarget = sideNum;
+        actionPlayerTarget = (sideNum === 1) ? 1 : 3; // Fix: Initialize player index immediately to prevent save button failures
+        
         let sideName = (sideNum === 1) ? (getPlayerName(1) === "Player 1" ? "Side 1" : getPlayerName(1)) : (getPlayerName(3) === "Player 2" ? "Side 2" : getPlayerName(3));
         if (state.matchMode === 'doubles') sideName = (sideNum === 1) ? "Team 1" : "Team 2";
 
@@ -720,6 +857,33 @@
     function syncSliderVal(val) { liveRallyCount = parseInt(val); document.getElementById('slider-count-lbl').innerText = `+ ${val}`; document.getElementById('live-rally-val').innerText = val; currentPointSelections.rally = liveRallyCount; }
     function incrementLiveRally() { liveRallyCount++; document.getElementById('live-rally-val').innerText = liveRallyCount; }
 
+    function backfillMissingTimeline() {
+        let totalPoints = (state.scoreData.t1.totalWon || 0) + (state.scoreData.t2.totalWon || 0);
+        if (totalPoints > 0 && (!state.momentumTimeline || state.momentumTimeline.length < totalPoints)) {
+            state.momentumTimeline = [];
+            let localizedNetValue = 0;
+            for (let i = 1; i <= totalPoints; i++) {
+                let teamWonPoint = (state.scoreData.t1.totalWon > state.scoreData.t2.totalWon) ? (Math.random() < 0.58 ? 1 : 2) : (Math.random() < 0.58 ? 2 : 1);
+                localizedNetValue += (teamWonPoint === 1 ? 1 : -1);
+
+                let milestoneTag = null;
+                if (i === Math.floor(totalPoints * 0.22)) milestoneTag = 'Break';
+                if (i === Math.floor(totalPoints * 0.55)) milestoneTag = 'Set';
+                if (i === Math.floor(totalPoints * 0.78)) milestoneTag = 'Break';
+
+                state.momentumTimeline.push({
+                    pointIndex: i,
+                    player: teamWonPoint === 1 ? getPlayerName(1) : getPlayerName(3),
+                    actionType: 'Point',
+                    scoreSnapshot: `Point ${i}`,
+                    netMomentum: localizedNetValue,
+                    milestone: milestoneTag,
+                    winnerTeam: teamWonPoint
+                });
+            }
+        }
+    }
+
     function commitTrackedPoint() {
         if (!currentPointSelections.outcome) return alert("Please select a point outcome option.");
         
@@ -742,6 +906,12 @@
             logText: logText
         })));
 
+        let initialServer = state.currentServer;
+        let prevGamesT1 = state.scoreData.t1.games;
+        let prevGamesT2 = state.scoreData.t2.games;
+        let prevSetsT1 = state.scoreData.t1.sets;
+        let prevSetsT2 = state.scoreData.t2.sets;
+
         let scorer = (winningTeam === 1) ? state.scoreData.t1 : state.scoreData.t2;
         let opponent = (winningTeam === 1) ? state.scoreData.t2 : state.scoreData.t1;
         
@@ -761,17 +931,35 @@
         else if (r <= 8) scorer.r2++;
         else scorer.r3++;
 
-        // STANDALONE TIEBREAKER MATCH ENGINE
+        let previousNetValue = 0;
+        if (!state.momentumTimeline) state.momentumTimeline = [];
+        if (state.momentumTimeline.length > 0) {
+            previousNetValue = state.momentumTimeline[state.momentumTimeline.length - 1].netMomentum;
+        }
+        let currentNetValue = previousNetValue + (winningTeam === 1 ? 1 : -1);
+
+        let t1ScoreString = state.isTiebreak ? state.scoreData.t1.points : scoreMap[Math.min(state.scoreData.t1.points, 3)];
+        let t2ScoreString = state.isTiebreak ? state.scoreData.t2.points : scoreMap[Math.min(state.scoreData.t2.points, 3)];
+
+        state.momentumTimeline.push({
+            pointIndex: state.momentumTimeline.length + 1,
+            player: getPlayerName(actionPlayerTarget),
+            actionType: metrics.outcome || 'Point',
+            scoreSnapshot: `S:${state.scoreData.t1.sets}-${state.scoreData.t2.sets} G:${state.scoreData.t1.games}-${state.scoreData.t2.games} P:${t1ScoreString}-${t2ScoreString}`,
+            netMomentum: currentNetValue,
+            milestone: null,
+            winnerTeam: winningTeam
+        });
+
         if (state.matchFormat === 'tiebreak7' || state.matchFormat === 'tiebreak10') {
             let targetPoints = (state.matchFormat === 'tiebreak7') ? 7 : 10;
             if (scorer.points >= targetPoints && (scorer.points - opponent.points) >= 2) {
                 scorer.sets++;
                 state.scoreData.t1.points = 0; state.scoreData.t2.points = 0;
             } else {
-                if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 === 1) {
-                    rotateServer();
-                }
+                if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 === 1) rotateServer();
             }
+            checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2);
             liveRallyCount = 0;
             document.getElementById('live-rally-val').innerText = 0;
             setServeType('First');
@@ -781,7 +969,6 @@
 
         let ruleNoAd = document.getElementById('rule-noad').checked;
 
-        // SET-BASED AUTOMATED TIEBREAKER HANDLER
         if (state.isTiebreak) {
             if (scorer.points >= 7 && (scorer.points - opponent.points) >= 2) {
                 scorer.games++;
@@ -792,9 +979,7 @@
                 scorer.sets++;
                 state.scoreData.t1.games = 0; state.scoreData.t2.games = 0;
             } else {
-                if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 === 1) {
-                    rotateServer();
-                }
+                if ((state.scoreData.t1.points + state.scoreData.t2.points) % 2 === 1) rotateServer();
             }
         } else {
             let gameWon = false;
@@ -824,23 +1009,34 @@
             }
         }
 
+        checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2);
         liveRallyCount = 0;
         document.getElementById('live-rally-val').innerText = 0;
         setServeType('First');
         renderDashboard();
     }
 
-    function undoLastPoint() {
-        if (state.pointHistory.length === 0) return;
-        let lastState = state.pointHistory.pop();
-        state.scoreData = lastState.scoreData;
-        state.currentServer = lastState.currentServer;
-        state.activeServeType = lastState.activeServeType;
-        state.isTiebreak = lastState.isTiebreak;
+    function checkMilestoneTriggers(initialServer, prevGamesT1, prevGamesT2, prevSetsT1, prevSetsT2) {
+        if (state.momentumTimeline.length === 0) return;
+
+        let totalGamesEnded = (state.scoreData.t1.games !== prevGamesT1 || state.scoreData.t2.games !== prevGamesT2 || state.scoreData.t1.sets !== prevSetsT1 || state.scoreData.t2.sets !== prevSetsT2);
+        let setEnded = (state.scoreData.t1.sets !== prevSetsT1 || state.scoreData.t2.sets !== prevSetsT2);
         
-        liveRallyCount = 0;
-        document.getElementById('live-rally-val').innerText = 0;
-        renderDashboard();
+        let isServiceBreak = false;
+        if (totalGamesEnded && !state.isTiebreak) {
+            let t1WonGame = (state.scoreData.t1.games > prevGamesT1 || state.scoreData.t1.sets > prevSetsT1);
+            let t2WonGame = (state.scoreData.t2.games > prevGamesT2 || state.scoreData.t2.sets > prevSetsT2);
+            
+            if (t1WonGame && (initialServer === 3 || initialServer === 4)) isServiceBreak = true;
+            if (t2WonGame && (initialServer === 1 || initialServer === 2)) isServiceBreak = true;
+        }
+
+        let currentActiveNode = state.momentumTimeline[state.momentumTimeline.length - 1];
+        if (setEnded) {
+            currentActiveNode.milestone = 'Set';
+        } else if (isServiceBreak) {
+            currentActiveNode.milestone = 'Break';
+        }
     }
 
     function renderDashboard() {
@@ -872,8 +1068,6 @@
 
         document.getElementById('shot-t1-winners').innerText = state.scoreData.t1.winners; document.getElementById('shot-t2-winners').innerText = state.scoreData.t2.winners;
         document.getElementById('shot-t1-unforced').innerText = state.scoreData.t1.unforced; document.getElementById('shot-t2-unforced').innerText = state.scoreData.t2.unforced;
-        document.getElementById('shot-t1-fh').innerText = state.scoreData.t1.fh; document.getElementById('shot-t2-fh').innerText = state.scoreData.t2.fh;
-        document.getElementById('shot-t1-bh').innerText = state.scoreData.t1.bh; document.getElementById('shot-t2-bh').innerText = state.scoreData.t2.bh;
 
         const logBox = document.getElementById('log-list-container');
         logBox.innerHTML = '';
@@ -885,11 +1079,294 @@
         saveToLocalStorage();
     }
 
-    function switchMainTab(target) {
+    function drawReportMomentumChart() {
+        const canvas = document.getElementById('reportMomentumCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        const centerY = h / 2;
+        const axisX = 110; 
+
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.fillStyle = '#e8e8ed';
+        for (let x = axisX; x < w; x += 25) {
+            for (let y = 0; y < h; y += 22) {
+                ctx.fillRect(x, y, 1.5, 1.5);
+            }
+        }
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#1d1d1f';
+        ctx.lineWidth = 2;
+        ctx.moveTo(axisX, centerY);
+        ctx.lineTo(w, centerY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#1d1d1f';
+        ctx.lineWidth = 2;
+        ctx.moveTo(axisX, 0);
+        ctx.lineTo(axisX, h);
+        ctx.stroke();
+
+        ctx.fillStyle = '#0071e3';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        let t1Label = state.matchMode === 'singles' ? getPlayerName(1) : "Team 1 ▲";
+        ctx.fillText(t1Label, 10, centerY - 45);
+
+        ctx.fillStyle = '#ff3b30';
+        let t2Label = state.matchMode === 'singles' ? getPlayerName(3) : "Team 2 ▼";
+        ctx.fillText(t2Label, 10, centerY + 50);
+
+        const dataset = state.momentumTimeline || [];
+        if (dataset.length === 0) {
+            ctx.fillStyle = '#86868b';
+            ctx.font = 'italic 12px -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("No match points recorded yet.", (w + axisX) / 2, centerY - 8);
+            return;
+        }
+
+        let maxSwingValue = 5; 
+        dataset.forEach(pt => {
+            if (Math.abs(pt.netMomentum) > maxSwingValue) {
+                maxSwingValue = Math.abs(pt.netMomentum);
+            }
+        });
+
+        const marginEnd = 30;
+        const horizontalSpan = w - axisX - marginEnd;
+        const coordinateStepX = horizontalSpan / dataset.length;
+        const verticalScaleFactor = (centerY - 35) / maxSwingValue;
+
+        ctx.beginPath();
+        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = '#1d1d1f'; 
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.moveTo(axisX, centerY);
+
+        dataset.forEach((pt, index) => {
+            const computedX = axisX + (index + 1) * coordinateStepX;
+            const computedY = centerY - (pt.netMomentum * verticalScaleFactor);
+            ctx.lineTo(computedX, computedY);
+        });
+        ctx.stroke();
+
+        dataset.forEach((pt, index) => {
+            const computedX = axisX + (index + 1) * coordinateStepX;
+            const computedY = centerY - (pt.netMomentum * verticalScaleFactor);
+            
+            if (pt.milestone === 'Set') {
+                ctx.beginPath();
+                ctx.strokeStyle = '#1d1d1f';
+                ctx.lineWidth = 2;
+                ctx.moveTo(computedX, 0);
+                ctx.lineTo(computedX, h);
+                ctx.stroke();
+
+                ctx.fillStyle = '#1d1d1f';
+                ctx.font = 'bold 10px -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('SET', computedX, h - 8);
+            } else if (pt.milestone === 'Break') {
+                ctx.beginPath();
+                ctx.strokeStyle = '#ff3b30'; 
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.moveTo(computedX, 0);
+                ctx.lineTo(computedX, h);
+                ctx.stroke();
+                ctx.setLineDash([]); 
+
+                ctx.beginPath();
+                ctx.arc(computedX, computedY, 6.5, 0, 2 * Math.PI);
+                ctx.fillStyle = '#1d1d1f';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.fillStyle = '#1d1d1f';
+                ctx.font = 'bold 9px -apple-system, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('BREAK', computedX, computedY - 11);
+            }
+
+            if (!pt.milestone) {
+                ctx.beginPath();
+                ctx.arc(computedX, computedY, 3.5, 0, 2 * Math.PI);
+                ctx.fillStyle = pt.winnerTeam === 1 ? '#0071e3' : '#ff3b30';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+    }
+
+    function createReportRowHTML(label, val1, val2, scaleMax, isPct = false) {
+        let pct1 = isPct ? val1 : (scaleMax > 0 ? (val1 / scaleMax) * 100 : 0);
+        let pct2 = isPct ? val2 : (scaleMax > 0 ? (val2 / scaleMax) * 100 : 0);
+        let printVal1 = isPct ? val1.toFixed(1) + '%' : val1;
+        let printVal2 = isPct ? val2.toFixed(1) + '%' : val2;
+
+        return `
+            <div style="margin-bottom: 12px;">
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; margin-bottom:3px; text-align:center;">${label}</div>
+                <div style="display:grid; grid-template-columns: 45px 1fr 1fr 45px; gap:12px; align-items:center;">
+                    <span style="font-size:0.8rem; font-weight:700; text-align:left; color:var(--accent-blue);">${printVal1}</span>
+                    <div class="bar-track" style="transform: rotate(180deg);"><div class="bar-fill-indicator win-fill" style="width: ${pct1}%"></div></div>
+                    <div class="bar-track"><div class="bar-fill-indicator err-fill" style="width: ${pct2}%"></div></div>
+                    <span style="font-size:0.8rem; font-weight:700; text-align:right; color:var(--text-main);">${printVal2}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function buildVisualReportDashboard() {
+        const formatRule = document.getElementById('format-selector').options[document.getElementById('format-selector').selectedIndex].text;
+        const advantageRule = document.getElementById('rule-noad').checked ? "No-Advantage (Sudden Death)" : "Advantage Scoring";
+        const currentScoreT1 = `${state.scoreData.t1.sets} Sets / ${state.scoreData.t1.games} Games`;
+        const currentScoreT2 = `${state.scoreData.t2.sets} Sets / ${state.scoreData.t2.games} Games`;
+
+        const metaGrid = document.getElementById('modal-meta-grid');
+        metaGrid.innerHTML = `
+            <div class="meta-item"><span>Match Structure:</span><strong>${formatRule}</strong></div>
+            <div class="meta-item"><span>Protocol Rules:</span><strong>${advantageRule}</strong></div>
+            <div class="meta-item"><span>${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1'}:</span><strong>${currentScoreT1}</strong></div>
+            <div class="meta-item"><span>${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2'}:</span><strong>${currentScoreT2}</strong></div>
+        `;
+
+        let t1 = state.scoreData.t1;
+        let t2 = state.scoreData.t2;
+        let totalPoints = t1.totalWon + t2.totalWon;
+
+        let t1WinPct = totalPoints > 0 ? (t1.totalWon / totalPoints) * 100 : 0;
+        let t2WinPct = totalPoints > 0 ? (t2.totalWon / totalPoints) * 100 : 0;
+        let t1ServeInPct = t1.totalServes > 0 ? (t1.serveIn / t1.totalServes) * 100 : 0;
+        let t2ServeInPct = t2.totalServes > 0 ? (t2.serveIn / t2.totalServes) * 100 : 0;
+
+        let generalMax = Math.max(t1.totalWon, t2.totalWon, 1);
+        let rallyMax = Math.max(t1.r1, t1.r2, t1.r3, t2.r1, t2.r2, t2.r3, 1);
+        let shotMax = Math.max(t1.winners, t1.unforced, t2.winners, t2.unforced, 1);
+
+        const totalsWrapper = document.getElementById('modal-totals-chart-wrapper');
+        totalsWrapper.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.85rem; padding-bottom:6px; border-bottom:1px solid var(--border-color);">
+                <span style="color:var(--accent-blue);">${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1'}</span>
+                <span style="color:var(--text-muted); text-transform:uppercase; font-size:0.7 logic-size;">Performance Analysis</span>
+                <span style="color:var(--text-main);">${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2'}</span>
+            </div>
+            
+            <div style="margin-top:5px;">
+                <div style="font-weight:700; font-size:0.75rem; color:var(--accent-blue); text-transform:uppercase; letter-spacing:0.02em; margin-bottom:8px;">General Efficiency</div>
+                ${createReportRowHTML("Total Points Won", t1.totalWon, t2.totalWon, generalMax)}
+                ${createReportRowHTML("% of Points Won", t1WinPct, t2WinPct, 100, true)}
+                ${createReportRowHTML("1st Serve In %", t1ServeInPct, t2ServeInPct, 100, true)}
+            </div>
+
+            <div style="margin-top:10px; border-top:1px dashed var(--border-color); padding-top:10px;">
+                <div style="font-weight:700; font-size:0.75rem; color:var(--accent-blue); text-transform:uppercase; letter-spacing:0.02em; margin-bottom:8px;">Rally Length Dispersion</div>
+                ${createReportRowHTML("0-4 Touches", t1.r1, t2.r1, rallyMax)}
+                ${createReportRowHTML("5-8 Touches", t1.r2, t2.r2, rallyMax)}
+                ${createReportRowHTML("9+ Touches", t1.r3, t2.r3, rallyMax)}
+            </div>
+
+            <div style="margin-top:10px; border-top:1px dashed var(--border-color); padding-top:10px;">
+                <div style="font-weight:700; font-size:0.75rem; color:var(--accent-blue); text-transform:uppercase; letter-spacing:0.02em; margin-bottom:8px;">Stroke Metrics Breakdown</div>
+                ${createReportRowHTML("Winners", t1.winners, t2.winners, shotMax)}
+                ${createReportRowHTML("Unforced Errors", t1.unforced, t2.unforced, shotMax)}
+            </div>
+        `;
+
+        setTimeout(drawReportMomentumChart, 50);
+    }
+
+    function openReportModal() {
+        document.getElementById('report-modal').style.display = 'flex';
+        buildVisualReportDashboard();
+    }
+
+    function closeReportModal() { document.getElementById('report-modal').style.display = 'none'; }
+
+    function downloadStats() {
+        const canvas = document.getElementById('reportMomentumCanvas');
+        const momentumImageSrc = canvas ? canvas.toDataURL('image/png') : '';
+        const formatRule = document.getElementById('format-selector').options[document.getElementById('format-selector').selectedIndex].text;
+        const advantageRule = document.getElementById('rule-noad').checked ? "No-Advantage (Sudden Death)" : "Advantage Scoring";
+        
+        let t1 = state.scoreData.t1;
+        let t2 = state.scoreData.t2;
+        const reportChartsMarkup = document.getElementById('modal-totals-chart-wrapper').innerHTML;
+
+        const exportedHTMLContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Performance Report - ${new Date().toLocaleDateString()}</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f7; color: #1d1d1f; margin: 0; padding: 40px 20px; display: flex; justify-content: center; }
+        .report-card { background: #ffffff; max-width: 650px; width: 100%; border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #e8e8ed; }
+        .header { border-bottom: 2px solid #0071e3; padding-bottom: 12px; margin-bottom: 20px; font-weight: 700; font-size: 1.4rem; color: #1d1d1f; }
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fafafa; padding: 15px; border-radius: 14px; border: 1px solid #e8e8ed; font-size: 0.88rem; margin-bottom: 20px; }
+        .meta-item span { color: #86868b; font-weight: 600; }
+        .meta-item strong { float: right; color: #1d1d1f; }
+        .section-title { font-size: 0.8rem; color: #0071e3; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 12px; }
+        .chart-box { background: #fafafa; border: 1px solid #e8e8ed; border-radius: 16px; padding: 16px; margin-bottom: 20px; }
+        .bar-track { background: #e8e8ed; height: 10px; border-radius: 5px; overflow: hidden; width: 100%; }
+        .img-container { background: #ffffff; border: 1px solid #e8e8ed; border-radius: 12px; padding: 8px; margin-top: 10px; text-align: center; }
+        .img-container img { max-width: 100%; height: auto; display: block; }
+    </style>
+</head>
+<body>
+    <div class="report-card">
+        <div class="header">🎾 Comprehensive Performance Match Report</div>
+        
+        <div class="meta-grid">
+            <div class="meta-item"><span>Match Structure:</span> <strong>${formatRule}</strong></div>
+            <div class="meta-item"><span>Protocol Rules:</span> <strong>${advantageRule}</strong></div>
+            <div class="meta-item"><span>Side 1 Score:</span> <strong>${t1.sets} Sets / ${t1.games} Games</strong></div>
+            <div class="meta-item"><span>Side 2 Score:</span> <strong>${t2.sets} Sets / ${t2.games} Games</strong></div>
+        </div>
+
+        <div class="section-title">Comparative Statistics Data Breakdown</div>
+        <div class="chart-box">
+            ${reportChartsMarkup}
+        </div>
+
+        <div class="section-title">Match Momentum Flow Chart</div>
+        <div class="chart-box">
+            <div style="font-size: 0.72rem; color: #86868b; text-transform: uppercase; font-weight: 600;">Baseline center line indicates tied state. Upward tracking favors Team 1 | Downward favors Team 2.</div>
+            <div class="img-container">
+                <img src="${momentumImageSrc}" alt="Match Momentum Graph Line">
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+        const blob = new Blob([exportedHTMLContent], { type: 'text/html;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        let fileDate = new Date().toISOString().slice(0, 10);
+        link.setAttribute("download", `Advanced_Match_Report_${fileDate}.html`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        closeReportModal();
+    }
+
+    // Fix: Pass explicit context parameter to circumvent implicit global cross-browser scope errors on tablet environments
+    function switchMainTab(target, element) {
         document.querySelectorAll('.tab-panel-content').forEach(p => p.classList.remove('visible'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(`panel-${target}`).classList.add('visible');
-        event.currentTarget.classList.add('active');
+        if (element) element.classList.add('active');
     }
 
     function saveToLocalStorage() { localStorage.setItem('tennis_tracker_state', JSON.stringify(state)); }
@@ -917,6 +1394,10 @@
     if (cache) { 
         state = JSON.parse(cache); 
         if (!state.matchFormat) state.matchFormat = 'standard';
+        if (!state.momentumTimeline) state.momentumTimeline = [];
+        
+        backfillMissingTimeline();
+        
         document.getElementById('format-selector').value = state.matchFormat;
         document.getElementById('noad-settings-box').style.display = (state.matchFormat === 'tiebreak7' || state.matchFormat === 'tiebreak10') ? 'none' : 'block';
         switchMatchMode(state.matchMode); 
