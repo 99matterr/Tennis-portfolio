@@ -6,22 +6,27 @@
     <title>Streamlined Tennis Tracker</title>
     <style>
         :root {
-            --bg-main: #f5f5f7;
-            --bg-card: #ffffff;
-            --accent-blue: #0071e3;
-            --accent-yellow: #ffcc00;
-            --accent-red: #ff3b30;
-            --text-main: #1d1d1f;
-            --text-muted: #86868b;
-            --border-color: #e8e8ed;
+            --bg-main: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.65);
+            --bg-card-sub: rgba(255, 255, 255, 0.4);
+            --accent-blue: #0071e3; /* Apple System Blue */
+            --accent-yellow: #ffcc00; /* Apple System Gold/Yellow */
+            --accent-red: #ff3b30; /* Apple System Red */
+            --text-main: #1d1d1f; /* Apple Deep Charcoal */
+            --text-muted: #86868b; /* Apple Muted Gray */
+            --border-color: rgba(0, 0, 0, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.5);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 113, 227, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.04) 0%, transparent 45%);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,11 +36,15 @@
 
         .tennis-app {
             background-color: var(--bg-card);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             width: 100%;
             max-width: 950px;
             border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
             border: 1px solid var(--border-color);
             padding-bottom: 25px;
             display: flex;
@@ -43,18 +52,20 @@
         }
 
         .app-header {
-            background-color: var(--accent-blue);
-            padding: 14px 20px;
-            font-weight: 600;
+            background-color: rgba(0, 113, 227, 0.08);
+            padding: 18px 24px;
+            font-weight: 700;
             font-size: 0.95rem;
-            color: #ffffff;
+            color: var(--accent-blue);
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 113, 227, 0.12);
         }
 
         .match-type-bar {
-            background-color: #fafafa;
-            padding: 12px 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            padding: 16px 24px;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
@@ -63,93 +74,113 @@
 
         .mode-btn {
             flex: 1;
-            min-width: 90px;
-            background: #e8e8ed;
-            border: none;
+            min-width: 95px;
+            background: var(--bg-card-sub);
+            border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 10px;
+            padding: 12px;
             border-radius: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: center;
         }
 
         .mode-btn.active {
-            background: var(--accent-blue);
-            color: white;
+            background: rgba(0, 113, 227, 0.12);
+            color: var(--accent-blue);
+            border-color: rgba(0, 113, 227, 0.25);
         }
 
         .selector-dropdown {
             flex: 1.5;
-            min-width: 160px;
-            background: #e8e8ed;
-            border: none;
+            min-width: 180px;
+            background: var(--bg-card-sub);
+            border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 10px;
+            padding: 12px;
             border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.85rem;
             cursor: pointer;
             outline: none;
             text-align: center;
         }
 
         .set-game-row {
-            background-color: #ffffff;
-            padding: 18px 20px;
+            background-color: transparent;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .team-section-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--accent-blue);
             text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.05em;
+            font-weight: 800;
+            letter-spacing: 0.08em;
         }
 
         .player-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1rem;
+            font-size: 1.05rem;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 12px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
         }
 
         .player-identity {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex: 1;
         }
 
         .server-dot {
-            width: 10px;
-            height: 10px;
-            background-color: transparent;
+            width: 12px;
+            height: 12px;
+            background-color: rgba(0, 0, 0, 0.05);
             border-radius: 50%;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
         .server-dot.serving {
             background-color: var(--accent-yellow);
-            border-color: #e6b800;
-            box-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
+            border-color: #ffffff;
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
+            animation: pulse-glow-light 2s infinite;
+        }
+
+        @keyframes pulse-glow-light {
+            0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 204, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
         }
 
         .editable-name {
             background: transparent;
             border: none;
             color: var(--text-main);
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.05rem;
+            font-weight: 700;
             outline: none;
-            width: 70%;
-            border-bottom: 1px dashed transparent;
+            width: 80%;
+            border-bottom: 2px dashed transparent;
+            transition: all 0.3s ease;
+        }
+
+        .editable-name:hover {
+            border-bottom-color: var(--text-muted);
         }
 
         .editable-name:focus {
@@ -157,26 +188,30 @@
         }
 
         .match-score-badge {
-            color: var(--text-main);
-            font-weight: 700;
-            font-size: 0.95rem;
+            color: var(--accent-blue);
+            font-weight: 800;
+            font-size: 0.9rem;
+            background: rgba(0, 113, 227, 0.08);
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 113, 227, 0.1);
         }
 
         .dashboard-main-body {
             display: flex;
             flex-direction: row;
-            background-color: #fafafa;
+            background-color: rgba(255, 255, 255, 0.2);
             border-bottom: 1px solid var(--border-color);
         }
 
         .side-action-panel {
             flex: 1;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 12px;
-            background-color: #ffffff;
+            gap: 16px;
+            background-color: transparent;
         }
 
         .side-action-panel.left-side { border-right: 1px solid var(--border-color); }
@@ -184,11 +219,11 @@
 
         .main-display {
             flex: 1.2;
-            padding: 30px 10px;
+            padding: 40px 10px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background-color: #fafafa;
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .score-block {
@@ -197,61 +232,90 @@
         }
 
         .score-label {
-            font-size: 1rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
         }
 
         .big-score {
-            font-size: 5.5rem;
-            font-weight: 800;
+            font-size: 6.5rem;
+            font-weight: 900;
             line-height: 1;
             color: var(--text-main);
+            text-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .player-action-card {
-            background: #f5f5f7;
-            padding: 14px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 16px;
+            border-radius: 20px;
             text-align: center;
-            border: 1px solid #e8e8ed;
+            border: 1px solid var(--border-color);
             width: 100%;
             box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .player-action-card.serving-active {
+            background: rgba(255, 204, 0, 0.08);
+            border-color: rgba(255, 204, 0, 0.35);
+            box-shadow: 0 4px 20px rgba(255, 204, 0, 0.08);
         }
 
         .player-action-card span {
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 800;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .action-buttons-container { display: flex; gap: 6px; }
+        .action-buttons-container { display: flex; gap: 8px; }
 
         .stat-trigger-btn {
             width: 100%;
             border: none;
-            padding: 12px 4px;
-            border-radius: 8px;
+            padding: 14px 6px;
+            border-radius: 12px;
             color: white;
-            font-weight: 600;
-            font-size: 0.8rem;
+            font-weight: 800;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: opacity 0.15s ease;
+            transition: all 0.2s ease;
+            min-height: 48px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
-        .stat-trigger-btn:hover { opacity: 0.9; }
-        .btn-win { background-color: var(--accent-blue); }
-        .btn-err { background-color: var(--accent-red); }
+        .stat-trigger-btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-win { 
+            background-color: var(--accent-blue); 
+        }
+        .btn-win:hover { 
+            background-color: #0056b3; 
+        }
+
+        .btn-err { 
+            background-color: var(--accent-red); 
+        }
+        .btn-err:hover { 
+            background-color: #d12c24; 
+        }
 
         .stats-container {
-            padding: 20px;
-            background-color: #ffffff;
+            padding: 24px;
+            background-color: transparent;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -267,32 +331,32 @@
         }
 
         .player-chart-card {
-            background: #fafafa;
+            background: rgba(255, 255, 255, 0.4);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px;
+            border-radius: 20px;
+            padding: 18px;
         }
 
         .chart-player-name {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 0.95rem;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: var(--text-main);
         }
 
-        .graph-metric-row { margin-bottom: 8px; }
+        .graph-metric-row { margin-bottom: 10px; }
 
         .graph-meta-info {
             display: flex;
             justify-content: space-between;
             font-size: 0.78rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .bar-track {
-            background: #e8e8ed;
+            background: rgba(0, 0, 0, 0.04);
             height: 10px;
             border-radius: 5px;
             overflow: hidden;
@@ -310,25 +374,30 @@
         .bar-fill-indicator.err-fill { background-color: var(--accent-red); }
 
         .utility-container {
-            padding: 20px 20px 0;
+            padding: 24px 24px 0;
             display: flex;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
         .action-btn {
             flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #d2d2d7;
-            background: #ffffff;
+            min-width: 120px;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-sub);
             color: var(--text-main);
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 48px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .action-btn:hover { background: #f5f5f7; }
+        .action-btn:hover { background: rgba(0, 0, 0, 0.03); border-color: rgba(0, 0, 0, 0.15); }
 
         .action-btn.view-btn {
             background-color: var(--accent-blue);
@@ -337,16 +406,24 @@
         }
 
         .action-btn.view-btn:hover { background-color: #0056b3; border-color: #0056b3; }
-        .action-btn.reset-btn { background-color: #1d1d1f; border-color: #1d1d1f; color: #ffffff; }
-        .action-btn.reset-btn:hover { background-color: #000000; }
+        
+        .action-btn.reset-btn { 
+            background-color: transparent; 
+            border-color: rgba(255, 59, 48, 0.2); 
+            color: var(--accent-red); 
+        }
+        .action-btn.reset-btn:hover { 
+            background-color: rgba(255, 59, 48, 0.05); 
+            border-color: var(--accent-red); 
+        }
 
         .modal-overlay-frame {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.40);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -355,11 +432,14 @@
         }
 
         .modal-wrapper {
-            background: #ffffff;
-            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 28px;
             max-width: 680px;
             width: 100%;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             padding: 24px;
             display: flex;
             flex-direction: column;
@@ -380,8 +460,9 @@
             padding-bottom: 12px;
         }
 
-        .modal-title { font-weight: 700; font-size: 1.1rem; }
-        .close-modal-x { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
+        .modal-title { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+        .close-modal-x { background: none; border: none; font-size: 1.6rem; cursor: pointer; color: var(--text-muted); }
+        .close-modal-x:hover { color: var(--text-main); }
 
         .visual-report-scroll-area {
             display: flex;
@@ -393,18 +474,63 @@
         }
 
         .meta-summary-grid {
-            background: #f5f5f7;
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 14px;
             padding: 14px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px 16px;
+            grid-template-columns: 1fr;
+            gap: 10px;
             font-size: 0.85rem;
             border: 1px solid var(--border-color);
         }
 
-        .meta-item span { font-weight: 600; color: var(--text-muted); }
-        .meta-item strong { font-weight: 700; color: var(--text-main); float: right; }
+        @media (min-width: 500px) {
+            .meta-summary-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .meta-item span { font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.72rem; }
+        .meta-item strong { font-weight: 800; color: var(--text-main); }
+
+        /* --- Touch Responsive Media Query --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+            .tennis-app {
+                border-radius: 20px;
+            }
+            .dashboard-main-body {
+                flex-direction: column;
+            }
+            .main-display {
+                order: -1; 
+                border-bottom: 1px solid var(--border-color);
+                padding: 24px 10px;
+            }
+            .big-score {
+                font-size: 5rem;
+            }
+            .side-action-panel {
+                padding: 16px;
+            }
+            .side-action-panel.left-side {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .side-action-panel.right-side {
+                border-left: none;
+            }
+            .stat-trigger-btn {
+                padding: 16px 8px;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -412,7 +538,7 @@
 <div class="tennis-app">
     <div class="app-header">
         <span>🎾 Scorekeeper Pro MVP</span>
-        <span id="current-date">July 7, 2026</span>
+        <span id="current-date">July 16, 2026</span>
     </div>
 
     <div class="match-type-bar">
@@ -486,6 +612,7 @@
                 <div class="score-label" id="lbl-t1">Team 1</div>
                 <div class="big-score" id="score-t1">0</div>
             </div>
+            <div class="score-block" style="flex: 0.1; font-size: 2.5rem; color: var(--text-muted); font-weight: 300; opacity: 0.5;">:</div>
             <div class="score-block">
                 <div class="score-label" id="lbl-t2">Team 2</div>
                 <div class="big-score" id="score-t2">0</div>
@@ -527,7 +654,7 @@
 <div class="modal-overlay-frame" id="report-modal">
     <div class="modal-wrapper">
         <div class="modal-header-row">
-            <div class="modal-title">📊 Visual Performance & Momentum Report</div>
+            <div class="modal-title">📊 Performance & Momentum Report</div>
             <button class="close-modal-x" onclick="closeReportModal()">&times;</button>
         </div>
         
@@ -544,7 +671,7 @@
                 <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.02em;">
                     Baseline indicates center tie. Upward tracking favors Team 1 | Downward tracking favors Team 2.
                 </div>
-                <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; overflow: hidden;">
+                <div style="background: rgba(255, 255, 255, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; overflow: hidden;">
                     <canvas id="reportMomentumCanvas" width="600" height="220" style="width: 100%; height: auto; display: block;"></canvas>
                 </div>
             </div>
@@ -552,7 +679,7 @@
 
         <div style="display:flex; gap:10px; margin-top:5px;">
             <button class="action-btn" onclick="closeReportModal()">Close Preview</button>
-            <button class="action-btn view-btn" onclick="downloadStats()">Download Visual Report (.HTML)</button>
+            <button class="action-btn view-btn" onclick="downloadStats()">Download Report (.HTML)</button>
         </div>
     </div>
 </div>
@@ -722,7 +849,7 @@
                     scoreSnapshot: `Point ${i}`,
                     netMomentum: localizedNetValue,
                     milestone: milestoneTag,
-                    winnerTeam: teamWonPoint // Explicitly tracks backfill points
+                    winnerTeam: teamWonPoint
                 });
             }
         }
@@ -768,7 +895,7 @@
             scoreSnapshot: `S:${state.scoreData.t1.sets}-${state.scoreData.t2.sets} G:${state.scoreData.t1.games}-${state.scoreData.t2.games} P:${t1ScoreString}-${t2ScoreString}`,
             netMomentum: currentNetValue,
             milestone: null,
-            winnerTeam: winningTeamNum // Explicitly tracks live logging points
+            winnerTeam: winningTeamNum
         });
 
         if (state.matchFormat === 'tiebreak7' || state.matchFormat === 'tiebreak10') {
@@ -950,14 +1077,14 @@
         }
 
         ctx.beginPath();
-        ctx.strokeStyle = '#1d1d1f';
+        ctx.strokeStyle = '#86868b';
         ctx.lineWidth = 2;
         ctx.moveTo(axisX, centerY);
         ctx.lineTo(w, centerY);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.strokeStyle = '#1d1d1f';
+        ctx.strokeStyle = '#86868b';
         ctx.lineWidth = 2;
         ctx.moveTo(axisX, 0);
         ctx.lineTo(axisX, h);
@@ -1048,7 +1175,6 @@
                 ctx.fillText('BREAK', computedX, computedY - 11);
             }
 
-            // FIXED POINT DOT RENDERING logic: Colors dots based on individual point winners, not positional grid boundaries
             if (!pt.milestone) {
                 ctx.beginPath();
                 ctx.arc(computedX, computedY, 3.5, 0, 2 * Math.PI);
@@ -1086,27 +1212,27 @@
         const totalsWrapper = document.getElementById('modal-totals-chart-wrapper');
         totalsWrapper.innerHTML = `
             <div>
-                <div style="font-weight:700; font-size:0.88rem; margin-bottom:5px; color: var(--accent-blue);">${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1 Totals'}</div>
-                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem; margin-bottom:4px;">
+                <div style="font-weight:800; font-size:0.9rem; margin-bottom:8px; color: var(--accent-blue);">${state.matchMode === 'singles' ? getPlayerName(1) : 'Team 1 Totals'}</div>
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:6px;">
                     <span>Winners</span>
                     <div class="bar-track"><div class="bar-fill-indicator win-fill" style="width: ${(t1Winners/scaleMaximum)*100}%"></div></div>
                     <strong style="text-align:right;">${t1Winners}</strong>
                 </div>
-                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem;">
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.8rem;">
                     <span>Errors</span>
                     <div class="bar-track"><div class="bar-fill-indicator err-fill" style="width: ${(t1Errors/scaleMaximum)*100}%"></div></div>
                     <strong style="text-align:right;">${t1Errors}</strong>
                 </div>
             </div>
-            <hr style="border:0; border-top:1px dashed var(--border-color); margin: 2px 0;">
+            <hr style="border:0; border-top:1px dashed var(--border-color); margin: 6px 0;">
             <div>
-                <div style="font-weight:700; font-size:0.88rem; margin-bottom:5px; color: var(--text-main);">${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2 Totals'}</div>
-                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem; margin-bottom:4px;">
+                <div style="font-weight:800; font-size:0.9rem; margin-bottom:8px; color: var(--text-main);">${state.matchMode === 'singles' ? getPlayerName(3) : 'Team 2 Totals'}</div>
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:6px;">
                     <span>Winners</span>
                     <div class="bar-track"><div class="bar-fill-indicator win-fill" style="width: ${(t2Winners/scaleMaximum)*100}%"></div></div>
                     <strong style="text-align:right;">${t2Winners}</strong>
                 </div>
-                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.78rem;">
+                <div style="display:grid; grid-template-columns: 80px 1fr 30px; align-items:center; gap:8px; font-size:0.8rem;">
                     <span>Errors</span>
                     <div class="bar-track"><div class="bar-fill-indicator err-fill" style="width: ${(t2Errors/scaleMaximum)*100}%"></div></div>
                     <strong style="text-align:right;">${t2Errors}</strong>
@@ -1235,6 +1361,11 @@
         document.getElementById('dot-p1b').classList.toggle('serving', state.currentServer === 2);
         document.getElementById('dot-p2a').classList.toggle('serving', state.currentServer === 3);
         document.getElementById('dot-p2b').classList.toggle('serving', state.currentServer === 4);
+
+        document.getElementById('card-p1a').classList.toggle('serving-active', state.currentServer === 1);
+        document.getElementById('card-p1b').classList.toggle('serving-active', state.currentServer === 2);
+        document.getElementById('card-p2a').classList.toggle('serving-active', state.currentServer === 3);
+        document.getElementById('card-p2b').classList.toggle('serving-active', state.currentServer === 4);
 
         renderPerformanceCharts();
         saveState();
